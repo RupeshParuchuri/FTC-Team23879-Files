@@ -22,16 +22,16 @@ public class PIDFArm extends OpMode {
     private final double zeroOffset = 30;
 
     private PIDController pidController=null;
-    public static  double kp=0;//0.77;
-    public static  double ki=0;//0.003;
-    public static  double kd=0.001;//0.0001;
+    public static  double kp=0.001;//0.77;
+    public static  double ki=0.00001;//0.003;
+    public static  double kd=0.00001;//0.0001;
 
-    public static double kf=0.01;//0.03;
+    public static double kf=0.0001;//0.03;
 
     public static int targetMotorPosition=0;
 
     //public static int targetDeg=0;
-    private final double ticksPerDegree=537.7 / 360;
+    private final double ticksPerDegree=1425.1 / 360;
     public  Encoder armMotorEncoder;
     DcMotorEx armMotor = null;
     @Override
