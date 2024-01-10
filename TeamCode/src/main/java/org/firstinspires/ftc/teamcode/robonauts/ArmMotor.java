@@ -1,33 +1,42 @@
 package org.firstinspires.ftc.teamcode.robonauts;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class ArmMotor extends OpMode {
-    public DcMotor TestMotor;
-    public CRServo secondservo;
-
-
-    @Override
-    public void init() {
-        secondservo = hardwareMap.get(CRServo.class, "second_servo");
-        TestMotor = hardwareMap.get(DcMotor.class, "TestMotor");
-    }
+public class ArmMotor extends LinearOpMode {
+    public CRServo clawMain;
+    public Servo clawLeft;
+    public Servo clawRight;
 
     @Override
-    public void loop() {
-        telemetry.addData("second_servo", gamepad1.right_stick_y);
-        telemetry.addData("TestMotor", gamepad1.left_stick_y);
+    public void runOpMode() throws InterruptedException {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        TestMotor.setPower(gamepad1.left_stick_y);
+        clawMain = hardwareMap.get(CRServo.class, "clawMain");
+        clawLeft = hardwareMap.get(Servo.class, "clawLeft");
+        clawRight = hardwareMap.get(Servo.class, "clawRight");
+        clawMain.resetDeviceConfigurationForOpMode();
 
-        secondservo.setPower(gamepad1.right_stick_y);
+        waitForStart();
+        while(opModeIsActive()) {
+            telemetry.addData("clawMain", gamepad1.left_stick_y);
+            telemetry.addData("clawLeft", gamepad1.right_stick_y);
+            telemetry.addData("clawRight", gamepad1.right_stick_y);
+            clawMain.setPower(1);
+            telemetry.update();
+            //clawLeft.setPosition(1);
+        }
+    }
+
 
     }
-}
+
+
+
 
