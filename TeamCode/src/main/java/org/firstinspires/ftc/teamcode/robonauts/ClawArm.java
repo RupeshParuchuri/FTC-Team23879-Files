@@ -32,7 +32,7 @@ public class ClawArm {
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void moveTo(double targetExtendPosition) {
+    public void moveTo(int targetExtendPosition) {
         int armPos =  armMotor.getCurrentPosition();
         //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
         double pid = pidController.calculate(armPos, targetMotorPosition);
@@ -41,6 +41,7 @@ public class ClawArm {
         double feedforward = Math.sin(Math.toRadians(angel)) * kf;
         double armPositionInDeg = armPos/ticksPerDegree + zeroOffset;
         double power = pid + feedforward;
+        armMotor.setTargetPosition(targetExtendPosition);
         armMotor.setPower(power);
     }
 
