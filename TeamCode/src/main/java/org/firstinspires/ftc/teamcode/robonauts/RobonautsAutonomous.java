@@ -23,6 +23,8 @@ public class RobonautsAutonomous extends LinearOpMode {
         telemetry.addData("Arm Motor current Position", clawArm.getCurrentPosition());
         ClawMain clawMain = new ClawMain(hardwareMap);
         clawMain.toPickUpPosition(3000);
+        clawArm.moveTo(-400);
+
         clawMain.releaseClaw();
         telemetry.addData("Right Claw current Position", clawMain.getRightClawPosition());
         telemetry.addData("Left Claw  current Position", clawMain.getLeftClawPosition());
