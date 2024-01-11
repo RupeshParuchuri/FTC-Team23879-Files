@@ -24,33 +24,38 @@ public class ClawArm {
 
     //public static int targetDeg=0;
     private final double ticksPerDegree=1425.1 / 360;
+    private Telemetry telemetry;
 
-    public ClawArm(HardwareMap hardwareMap) {
+    public ClawArm(HardwareMap hardwareMap, Telemetry telemetry) {
         armMotor = hardwareMap.get(DcMotorEx.class, "TestMotor");
         pidController = new PIDController(kp, ki,kd);
         armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.telemetry=telemetry;
     }
 
-    public void loop(int targetExtendPosition, Telemetry telemetry) {
-        int armPos =  armMotor.getCurrentPosition();
-        //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
-        double pid = pidController.calculate(armPos, targetExtendPosition);
-        telemetry.addData("PID", pid);
-        // double feedforward = Math.cos(Math.toRadians(targetMotorPosition / ticksPerDegree)) * kf;
-        double angel = armPos / ticksPerDegree + zeroOffset;
-        double feedforward = Math.sin(Math.toRadians(angel)) * kf;
-        telemetry.addData("feed forward", feedforward);
+    public void moveTo(int targetExtendPosition) {
+        while (Math.abs(targetExtendPosition - armMotor.getCurrentPosition()) <= 5) {
+            int armPos = armMotor.getCurrentPosition();
 
-        double armPositionInDeg = armPos/ticksPerDegree + zeroOffset;
-        double power = pid + feedforward;
-        telemetry.addData("power", power);
-        telemetry.addData("targetExtendPosition", targetExtendPosition);
+            //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
+            double pid = pidController.calculate(armPos, targetExtendPosition);
+            telemetry.addData("PID", pid);
+            // double feedforward = Math.cos(Math.toRadians(targetMotorPosition / ticksPerDegree)) * kf;
+            double angel = armPos / ticksPerDegree + zeroOffset;
+            double feedforward = Math.sin(Math.toRadians(angel)) * kf;
+            telemetry.addData("feed forward", feedforward);
 
-        armMotor.setTargetPosition(targetExtendPosition);
-        armMotor.setPower(power);
+            double armPositionInDeg = armPos / ticksPerDegree + zeroOffset;
+            double power = pid + feedforward;
+            telemetry.addData("power", power);
+            telemetry.addData("targetExtendPosition", targetExtendPosition);
+
+            armMotor.setTargetPosition(targetExtendPosition);
+            armMotor.setPower(power);
+        }
     }
 
     public void extend() {
