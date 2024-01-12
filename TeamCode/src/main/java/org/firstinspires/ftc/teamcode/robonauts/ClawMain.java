@@ -21,6 +21,8 @@ public class ClawMain {
         this.clawMainServo=hardwareMap.get(CRServo.class, "clawMain");
         this.clawLeft = hardwareMap.get(Servo.class, "clawLeft");
         this.clawRight = hardwareMap.get(Servo.class, "clawRight");
+        clawLeft.resetDeviceConfigurationForOpMode();
+        clawRight.resetDeviceConfigurationForOpMode();
     }
 
     public void setPosition(double power, CRServo.Direction direction) {
@@ -38,12 +40,18 @@ public class ClawMain {
         clawLeft.setPosition(0.5);
         clawRight.setPosition(0.5);
     }
+    public void stop() {
+        clawMainServo.setPower(0);
+    }
 
+    public void setPower(double power) {
+        clawMainServo.setPower(power);
+    }
     public void toPickUpPosition(long millisecs) {
 
         long startTime = System.currentTimeMillis();
-        clawMainServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        while (System.currentTimeMillis() - startTime < millisecs) {
+        //clawMainServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        //while (System.currentTimeMillis() - startTime < millisecs) {
             // Your code to run goes here
 
             // Add a delay if needed (optional)
@@ -53,7 +61,7 @@ public class ClawMain {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        //}
 
     }
     public void depositPixel() {

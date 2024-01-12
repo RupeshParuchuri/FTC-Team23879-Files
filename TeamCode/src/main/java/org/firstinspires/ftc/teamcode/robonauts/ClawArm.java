@@ -35,9 +35,13 @@ public class ClawArm {
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.telemetry=telemetry;
     }
-
-    public void moveTo(int targetExtendPosition) {
-        while (Math.abs(targetExtendPosition - armMotor.getCurrentPosition()) <= 5) {
+    public void setPower(double power) {
+        armMotor.setPower(power);
+    }
+    public double moveTo(int targetExtendPosition) {
+        //while (Math.abs(targetExtendPosition - armMotor.getCurrentPosition()) >= 5) {
+        //while (true) {
+            pidController.setPID(kp,ki,kd);
             int armPos = armMotor.getCurrentPosition();
 
             //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
@@ -47,15 +51,23 @@ public class ClawArm {
             double angel = armPos / ticksPerDegree + zeroOffset;
             double feedforward = Math.sin(Math.toRadians(angel)) * kf;
             telemetry.addData("feed forward", feedforward);
-
+            telemetry.addData("arm position:",armPos);
+            telemetry.addData("angle",angel);
             double armPositionInDeg = armPos / ticksPerDegree + zeroOffset;
             double power = pid + feedforward;
             telemetry.addData("power", power);
             telemetry.addData("targetExtendPosition", targetExtendPosition);
 
-            armMotor.setTargetPosition(targetExtendPosition);
+            //armMotor.setTargetPosition(targetExtendPosition);
             armMotor.setPower(power);
-        }
+
+            telemetry.update();
+/*            if (targetExtendPosition - armMotor.getCurrentPosition() == 0) {
+                telemetry.addData("Target reached ....returning", armMotor.getCurrentPosition() );
+                return power ;
+            }*/
+       // }
+        return power;
     }
 
     public void extend() {
