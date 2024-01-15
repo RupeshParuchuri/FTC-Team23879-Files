@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode.robonauts;
 
+import android.drm.DrmStore;
+
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,7 +32,11 @@ public class ClawArm {
     private final double ticksPerDegree=1425.1 / 360;
     private Telemetry telemetry;
 
-    public ClawArm(HardwareMap hardwareMap, Telemetry telemetry) {
+    private int targetPosition;
+
+    private Context robotState;
+
+    public ClawArm(HardwareMap hardwareMap, Telemetry telemetry, int targetPosition, Context robotState) {
         armMotor = hardwareMap.get(DcMotorEx.class, "TestMotor");
         pidController = new PIDController(kp, ki,kd);
         armMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -34,6 +44,8 @@ public class ClawArm {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.telemetry=telemetry;
+        this.targetPosition = targetPosition;
+        this.robotState = robotState;
     }
     public void setPower(double power) {
         armMotor.setPower(power);
@@ -80,5 +92,23 @@ public class ClawArm {
 
     public double getCurrentPosition() {
         return armMotor.getCurrentPosition();
+    }
+
+    public class ExtendToDropAtSpikeAction implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            moveTo(targetPosition);
+            if (robotState.getRobotState().equalsIgnoreCase("CLAW_RELEASED")) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public Action extendToDropAtSpike() {
+        return new ExtendToDropAtSpikeAction();
     }
 }

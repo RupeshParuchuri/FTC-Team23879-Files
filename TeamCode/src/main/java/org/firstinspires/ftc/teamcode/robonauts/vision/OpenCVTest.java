@@ -36,8 +36,8 @@ public class OpenCVTest extends LinearOpMode {
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
 
     // Calculate the distance using the formula
-    public static final double objectWidthInRealWorldUnits = 3.25;  // Replace with the actual width of the object in real-world units
-    public static final double focalLength = 771;  // Replace with the focal length of the camera in pixels
+    public static final double objectWidthInRealWorldUnits = 2.5;  // Replace with the actual width of the object in real-world units
+    public static final double focalLength = 790;  // Replace with the focal length of the camera in pixels
 
 
     @Override

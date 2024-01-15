@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.robonauts;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -16,13 +20,17 @@ public class ClawMain {
 
     Servo clawRight = null;
 
+    long startTimeMillis;
+    Context robotState;
 
-    public ClawMain(HardwareMap hardwareMap) {
+    public ClawMain(HardwareMap hardwareMap, long startTimeMillis, Context robotState) {
         this.clawMainServo=hardwareMap.get(CRServo.class, "clawMain");
         this.clawLeft = hardwareMap.get(Servo.class, "clawLeft");
         this.clawRight = hardwareMap.get(Servo.class, "clawRight");
         clawLeft.resetDeviceConfigurationForOpMode();
         clawRight.resetDeviceConfigurationForOpMode();
+        this.startTimeMillis = startTimeMillis;
+        this.robotState = robotState;
     }
 
     public void setPosition(double power, CRServo.Direction direction) {
@@ -31,7 +39,8 @@ public class ClawMain {
     }
 
     public void releaseClaw() {
-        clawLeft.setPosition(0);
+        clawRight.setDirection(Servo.Direction.REVERSE);
+        //clawLeft.setPosition(0.5);
         clawRight.setPosition(0);
     }
 
@@ -66,7 +75,7 @@ public class ClawMain {
     }
     public void depositPixel() {
         //clawMainServo.setPosition(0.5);
-        releaseClaw();
+        //releaseClaw();
     }
 
     public double getLeftClawPosition() {
@@ -81,4 +90,38 @@ public class ClawMain {
         //return clawMainServo.getPosition();
         return 0;
     }
+
+
+    public class ReleaseToDropAtSpikeAction implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                initialized = true;
+            }
+            if (System.currentTimeMillis() - startTimeMillis >= 4000) {
+                setPower(0);
+                releaseClaw();
+                robotState.setRobotState("CLAW_RELEASED");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                telemetryPacket.put("Time greater than 4000...Releasing...", System.currentTimeMillis());
+                return false;
+            } else  {
+                telemetryPacket.put("Time less than 4000...rotation...", System.currentTimeMillis());
+
+                setPower(1);
+                return true;
+            }
+
+        }
+    }
+    public Action release() {
+        return new ReleaseToDropAtSpikeAction();
+    }
+
 }

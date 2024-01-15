@@ -26,7 +26,7 @@ public class LineToX extends LinearOpMode {
         //Action action = mecanumDrive.actionBuilder(new Pose2d( new Vector2d(30,30), 90)).lineToX(30).build();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .lineToX(-48)
+                        .lineToX(10)
                         //.splineTo(new Vector2d(2, 2), 0)
                         //.splineTo(new Vector2d(60, 0), Math.PI)
                         .build());

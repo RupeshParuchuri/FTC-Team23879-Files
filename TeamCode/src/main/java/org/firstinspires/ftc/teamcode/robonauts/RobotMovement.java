@@ -37,6 +37,36 @@ public class RobotMovement {
         return drive;
     }
 
+    public MecanumDrive strafeTo(int x, int y) {
+        Pose2d pose = new Pose2d(20, 14, 0);
+        Actions.runBlocking(drive.
+                actionBuilder(pose).
+                strafeTo(new Vector2d(x,y))
+                .build());
+        return drive;
+    }
+    public void moveToSpikeLeft(int x, int y) {
+        Pose2d pose = new Pose2d(0, 0, 0);
+        Actions.runBlocking(drive.
+                actionBuilder(pose)
+                //.turn(Math.toRadians(30))
+                        .strafeTo(new Vector2d(x,y))
+                        //.lineToY(24)
+                .build());
+        //return drive;
+    }
+
+    public MecanumDrive moveToSpikeRight(int x, int y) {
+        Pose2d pose = new Pose2d(0, 0, 0);
+
+        Actions.runBlocking(drive.
+                actionBuilder(pose).
+                turn(-45)
+                        .lineToY(-12)
+                .build());
+        return drive;
+    }
+
 //    public void trajectorySample() {
 //        Pose2d pose = new Pose2d(0, 0, 0);
 //

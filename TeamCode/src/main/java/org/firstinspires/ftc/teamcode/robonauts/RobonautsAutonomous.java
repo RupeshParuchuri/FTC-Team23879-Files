@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.robonauts;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.sun.tools.javac.util.StringUtils;
@@ -16,12 +20,35 @@ public class RobonautsAutonomous extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         waitForStart();
-        ClawArm clawArm = new ClawArm(hardwareMap, telemetry);
+        //----------------------------------------
+        long startTimeInMilli = System.currentTimeMillis();
+
+        Pose2d beginPose = new Pose2d(0, 0, 0);
+        MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
+        Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
+        Context context = new Context();
+        ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
+        ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
+
+        Actions.runBlocking(new SequentialAction(
+                drive.strafeTo(20,14),
+                new ParallelAction(
+                clawArm.extendToDropAtSpike(),
+                        clawMain.release()),
+                drive.strafeTo(8,14 ),
+                drive.strafeTo(60,14 )
+        ));
+
+        //----------------------------------------
+    /*--------------------------------un comment to go back
+        ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, "INIT");
         ClawMain clawMain = new ClawMain(hardwareMap);
         long startTimeInMilli = System.currentTimeMillis();
         MecanumDrive drive = null;
         RobotMovement robotMovement = new RobotMovement(hardwareMap, telemetry);
-        drive = robotMovement.moveToSpike(24, 0);
+        //drive = robotMovement.moveToSpike(24,0);
+        robotMovement.moveToSpikeLeft(20, 14);
+
 
         robotState = "REACHED_SPIKE";
 
@@ -51,15 +78,10 @@ public class RobonautsAutonomous extends LinearOpMode {
             if (robotState.equalsIgnoreCase("CLAW_EXTEND_1")) {
                 robotState = "CLAW_RELEASED";
                 telemetry.addData("ROBOT state:", "RELEASING.....");
-
                 clawMain.releaseClaw();
             }
             telemetry.addData("ROBOT state:", robotState);
 
-            if (robotState.equalsIgnoreCase("CLAW_RELEASED")) {
-                robotState = "MOVING_TO_BB";
-                //drive = robotMovement.moveToX(24, 60);
-            }
             telemetry.addData("ROBOT state:", robotState);
 
             telemetry.addData("Right Claw current Position", clawMain.getRightClawPosition());
@@ -70,5 +92,7 @@ public class RobonautsAutonomous extends LinearOpMode {
             telemetry.update();
 
         }
+        */
+
     }
 }
