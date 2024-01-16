@@ -23,20 +23,27 @@ public class RobonautsAutonomous extends LinearOpMode {
         //----------------------------------------
         long startTimeInMilli = System.currentTimeMillis();
 
-        Pose2d beginPose = new Pose2d(0, 0, 0);
+        Pose2d beginPose = new Pose2d(-36, -60, 0);
         MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
         Context context = new Context();
         ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
         ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
+        PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
 
         Actions.runBlocking(new SequentialAction(
-                drive.strafeTo(20,14),
-                new ParallelAction(
+                drive.strafeTo(-24,-50),
+                pixelDrop.release(),
+                drive.strafeTo(-36,-60),
+                drive.turn(Math.toRadians(-85)),
+                drive.toX(60)
+
+                //drive.strafeTo(8,14 ),
+                //drive.strafeTo(60,14 ),
+                /*new ParallelAction(
                 clawArm.extendToDropAtSpike(),
-                        clawMain.release()),
-                drive.strafeTo(8,14 ),
-                drive.strafeTo(60,14 )
+                        clawMain.release())*/
+
         ));
 
         //----------------------------------------

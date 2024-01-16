@@ -19,6 +19,7 @@ public class ClawMain {
     Servo clawLeft = null;
 
     Servo clawRight = null;
+    Servo clawDrop = null;
 
     long startTimeMillis;
     Context robotState;
@@ -27,6 +28,8 @@ public class ClawMain {
         this.clawMainServo=hardwareMap.get(CRServo.class, "clawMain");
         this.clawLeft = hardwareMap.get(Servo.class, "clawLeft");
         this.clawRight = hardwareMap.get(Servo.class, "clawRight");
+        this.clawDrop = hardwareMap.get(Servo.class,"clawDrop");
+        clawDrop.resetDeviceConfigurationForOpMode();
         clawLeft.resetDeviceConfigurationForOpMode();
         clawRight.resetDeviceConfigurationForOpMode();
         this.startTimeMillis = startTimeMillis;

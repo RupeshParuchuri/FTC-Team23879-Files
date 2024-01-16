@@ -29,7 +29,17 @@ public class Drive {
                 actionBuilder(pose2d).strafeTo(new Vector2d(x, y))
                 .build();
     }
+    public Action turn(double angle) {
+        return mecanumDrive.
+                actionBuilder(pose2d).turn(angle)
+                .build();
+    }
 
+    public Action toX(double x) {
+        return mecanumDrive.
+                actionBuilder(pose2d).lineToX(x)
+                .build();
+    }
     public Pose2d getCurrentPose() {
         return pose2d;
     }
