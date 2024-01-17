@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -30,21 +32,67 @@ public class RobonautsAutonomous extends LinearOpMode {
         ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
         ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
         PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
+        Pose2d pose = new Pose2d(-36, -60,-90);
+        Pose2d poseAfterDrop = new Pose2d(-24, -50,90);
 
+
+
+
+
+
+
+
+
+
+        TrajectoryActionBuilder actionBuilder = mecanumDrive.actionBuilder(new Pose2d(-36, -60, Math.toRadians(0)));
         Actions.runBlocking(new SequentialAction(
-                drive.strafeTo(-24,-50),
-                pixelDrop.release(),
-                drive.strafeTo(-36,-60),
-                drive.turn(Math.toRadians(-85)),
-                drive.toX(60)
+                actionBuilder.strafeTo(new Vector2d(-24, -50))
+                .afterDisp(5, pixelDrop.release())
+                        .build())
+        );
+        sleep(500);
+        Actions.runBlocking(
+                new SequentialAction(
+                        mecanumDrive.actionBuilder(mecanumDrive.pose)
+                                .setTangent(0)
+                                .splineToLinearHeading( new Pose2d(-36, -55, -Math.PI/2), Math.PI/2).
+                                build()));
+        sleep(500);
+       /* Actions.runBlocking(
+                new SequentialAction(
+                        mecanumDrive.actionBuilder(mecanumDrive.pose).strafeTo(new Vector2d(-36,-92)).
+                                build()));*/
+        Actions.runBlocking(
+                new SequentialAction(
+                        mecanumDrive.actionBuilder(new Pose2d(-36, -60, -Math.PI/2))
+                                .setTangent(0)
+                                .strafeTo(new Vector2d(-36, -100)).
+                                build()));
+                        //.strafeTo(new Vector2d(-30, -60))
+                //.strafeTo(new Vector2d(30, -55)).build()));
+
+
+
+
+        /*
+        actionBuilder.turn(Math.toRadians(90))
+                        .lineToX(60);
+        Actions.runBlocking(new SequentialAction(
+                actionBuilder.build()
+               // drive.strafeTo(-24,-50, beginPose),
+                //pixelDrop.release(),
+                //drive.strafeTo(-36,-60, beginPose),
+                //actionBuilder.turn(Math.toRadians(-90)),
+                //drive.strafeTo(30, -60, pose)
+               //drive.toX(30, pose)
 
                 //drive.strafeTo(8,14 ),
                 //drive.strafeTo(60,14 ),
-                /*new ParallelAction(
+                *//*new ParallelAction(
                 clawArm.extendToDropAtSpike(),
-                        clawMain.release())*/
+                        clawMain.release())*//*
 
-        ));
+        ));*/
 
         //----------------------------------------
     /*--------------------------------un comment to go back
