@@ -25,7 +25,7 @@ public class RobonautsAutonomous extends LinearOpMode {
         //----------------------------------------
         long startTimeInMilli = System.currentTimeMillis();
 
-        Pose2d beginPose = new Pose2d(-36, -60, 0);
+        Pose2d beginPose = new Pose2d(-36, -60, Math.PI/2);
         MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
         Context context = new Context();
@@ -36,6 +36,18 @@ public class RobonautsAutonomous extends LinearOpMode {
         Pose2d poseAfterDrop = new Pose2d(-24, -50,90);
 
 
+        Actions.runBlocking(mecanumDrive.actionBuilder(beginPose)
+                .strafeTo(new Vector2d(-48,-36))
+
+                //.afterDisp(10, pixelDrop.release())
+                .strafeTo(new Vector2d(-36,-60))
+                .strafeTo(new Vector2d(12,-60))
+                                //.setTangent(0)
+                                .splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
+
+                //       .turn(Math.toRadians(-90))
+                //.strafeTo(new Vector2d(24,-60))
+                .build());
 
 
 
@@ -43,8 +55,16 @@ public class RobonautsAutonomous extends LinearOpMode {
 
 
 
+/*
 
-        TrajectoryActionBuilder actionBuilder = mecanumDrive.actionBuilder(new Pose2d(-36, -60, Math.toRadians(0)));
+
+        TrajectoryActionBuilder actionBuilder = mecanumDrive.actionBuilder(new Pose2d(0, 0, Math.toRadians(0)));
+        //TrajectoryActionBuilder secondActionBuilder = mecanumDrive.actionBuilder(mecanumDrive.pose);
+
+        Actions.runBlocking(
+                actionBuilder.setTangent(0).splineToConstantHeading(new Vector2d(24,24), Math.PI/2).build());
+
+
         Actions.runBlocking(new SequentialAction(
                 actionBuilder.strafeTo(new Vector2d(-24, -50))
                 .afterDisp(5, pixelDrop.release())
@@ -58,10 +78,11 @@ public class RobonautsAutonomous extends LinearOpMode {
                                 .splineToLinearHeading( new Pose2d(-36, -55, -Math.PI/2), Math.PI/2).
                                 build()));
         sleep(500);
-       /* Actions.runBlocking(
+       Actions.runBlocking(
                 new SequentialAction(
                         mecanumDrive.actionBuilder(mecanumDrive.pose).strafeTo(new Vector2d(-36,-92)).
                                 build()));*/
+        /*
         Actions.runBlocking(
                 new SequentialAction(
                         mecanumDrive.actionBuilder(new Pose2d(-36, -60, -Math.PI/2))
@@ -71,7 +92,7 @@ public class RobonautsAutonomous extends LinearOpMode {
                         //.strafeTo(new Vector2d(-30, -60))
                 //.strafeTo(new Vector2d(30, -55)).build()));
 
-
+*/
 
 
         /*

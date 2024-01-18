@@ -24,24 +24,36 @@ public class Drive {
         return new TodoAction();
     }*/
 
-    public Action strafeTo(double x, double y) {
+    public Action strafeTo(double x, double y, Pose2d pose2d) {
+        if (pose2d != null) {
+            this.pose2d=pose2d;
+        }
         return mecanumDrive.
                 actionBuilder(pose2d).strafeTo(new Vector2d(x, y))
                 .build();
     }
-    public Action turn(double angle) {
+    public Action turn(double angle, Pose2d pose2d) {
         return mecanumDrive.
                 actionBuilder(pose2d).turn(angle)
                 .build();
     }
 
-    public Action toX(double x) {
+    public Action toX(double x, Pose2d pose2d1) {
         return mecanumDrive.
-                actionBuilder(pose2d).lineToX(x)
+                actionBuilder(pose2d1).lineToX(x)
+                .build();
+    }
+    public Action toY(double y, Pose2d pose2d1) {
+        return mecanumDrive.
+                actionBuilder(pose2d1).lineToX(y)
                 .build();
     }
     public Pose2d getCurrentPose() {
         return pose2d;
+    }
+
+    public void setCurrentPose(Pose2d pose) {
+        pose2d = pose;
     }
 }
 
