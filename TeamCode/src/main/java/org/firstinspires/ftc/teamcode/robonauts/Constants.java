@@ -16,7 +16,7 @@ public class Constants {
 
 
     public static final Pose2d R_4_BEGIN_POSE = new Pose2d( new Vector2d(36, -60), Math.PI/2);
-    public static final Vector2d R_4_STRAFE_RELEASE_PIXEL_LEFT = new Vector2d(20, -36);
+    public static final Vector2d R_4_STRAFE_RELEASE_PIXEL_LEFT = new Vector2d(28, -36);
     public static final Vector2d R_4_STRAFE_RELEASE_PIXEL_RIGHT = new Vector2d(52, -36);
     public static final Vector2d R_4_STRAFE_RELEASE_PIXEL_CENTER = new Vector2d(30, 24);
     public static final Vector2d R_4_STRAFE_BACK = new Vector2d(36, -60);

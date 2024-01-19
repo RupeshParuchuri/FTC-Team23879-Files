@@ -25,26 +25,28 @@ public class RobonautsAutonomous extends LinearOpMode {
         //----------------------------------------
         long startTimeInMilli = System.currentTimeMillis();
 
-        Pose2d beginPose = new Pose2d(-36, -60, Math.PI/2);
+       // Pose2d beginPose = new Pose2d(-36, -60, Math.PI/2);
+        Pose2d beginPose = Constants.R_4_BEGIN_POSE;
         MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
         Context context = new Context();
         ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
         ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
         PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
-        Pose2d pose = new Pose2d(-36, -60,-90);
+        Pose2d pose = Constants.R_4_BEGIN_POSE;//new Pose2d(-36, -60,-90);
         Pose2d poseAfterDrop = new Pose2d(-24, -50,90);
 
         //Red
         Actions.runBlocking(mecanumDrive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(-48,-36))
-
+                //.strafeTo(new Vector2d(-48,-36))
+                .strafeTo(Constants.R_4_STRAFE_RELEASE_PIXEL_LEFT)
                 //.afterDisp(10, pixelDrop.release())
-                .strafeTo(new Vector2d(-36,-60))
-                .strafeTo(new Vector2d(12,-60))
+                //.strafeTo(new Vector2d(-36,-60))
+                .strafeTo(Constants.R_4_STRAFE_BACK)
+                //.strafeTo(new Vector2d(12,-60))
                                 //.setTangent(0)
-                .splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
-
+                //.splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
+                .splineToLinearHeading(Constants.R_4_SPLINE_BB, Constants.R_4_HEADING_BB)
                 //       .turn(Math.toRadians(-90))
                 //.strafeTo(new Vector2d(24,-60))
                 .build());
