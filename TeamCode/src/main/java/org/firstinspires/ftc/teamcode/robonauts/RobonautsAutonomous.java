@@ -35,7 +35,7 @@ public class RobonautsAutonomous extends LinearOpMode {
         Pose2d pose = new Pose2d(-36, -60,-90);
         Pose2d poseAfterDrop = new Pose2d(-24, -50,90);
 
-
+        //Red
         Actions.runBlocking(mecanumDrive.actionBuilder(beginPose)
                 .strafeTo(new Vector2d(-48,-36))
 
@@ -43,7 +43,7 @@ public class RobonautsAutonomous extends LinearOpMode {
                 .strafeTo(new Vector2d(-36,-60))
                 .strafeTo(new Vector2d(12,-60))
                                 //.setTangent(0)
-                                .splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
+                .splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
 
                 //       .turn(Math.toRadians(-90))
                 //.strafeTo(new Vector2d(24,-60))
