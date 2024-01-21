@@ -14,6 +14,7 @@ import com.sun.tools.javac.util.StringUtils;
 
 import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robonauts.vision.ObjectDetection;
 
 @Autonomous
 public class RobonautsAutonomous extends LinearOpMode {
@@ -21,26 +22,63 @@ public class RobonautsAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        waitForStart();
-        //----------------------------------------
-        long startTimeInMilli = System.currentTimeMillis();
+        ObjectDetection objectDetection = new ObjectDetection(hardwareMap, telemetry);
 
+        waitForStart();
+        long startTimeInMilli = System.currentTimeMillis();
+        String spikeLocation = "right";
+        while (opModeIsActive()) {
+            sleep(20);
+
+            Double[] xAxis = objectDetection.getObjectDetectionsX();
+
+            telemetry.update();
+            telemetry.addData("Object coordinates", xAxis.length);
+
+            if (System.currentTimeMillis() - startTimeInMilli > 2000 || xAxis.length > 0) {
+                if (xAxis.length > 0) {
+                    double xPos = xAxis[0];
+                    if (xPos < 300 ) {
+                        spikeLocation = "left";
+                    } else if (xPos > 300 && xPos < 500)  {
+                        spikeLocation = "center";
+                    }
+                }
+                break;
+            }
+
+        }
+        //----------------------------------------
+        telemetry.addData("Prop location coordinates", spikeLocation);
+        telemetry.update();
+        //sleep(7000);
        // Pose2d beginPose = new Pose2d(-36, -60, Math.PI/2);
-        Pose2d beginPose = Constants.R_4_BEGIN_POSE;
+        Pose2d beginPose = Constants.B_2_BEGIN_POSE;
         MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
         Context context = new Context();
+
         ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
         ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
         PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
         Pose2d pose = Constants.R_4_BEGIN_POSE;//new Pose2d(-36, -60,-90);
         Pose2d poseAfterDrop = new Pose2d(-24, -50,90);
+        LinearSlides linearSlides = new LinearSlides(hardwareMap, telemetry, -1500, "hold");
+        //R1
+        //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_R_1_ACTION(mecanumDrive, "center"));
+        //R4
+        //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_R_4_ACTION(mecanumDrive, "center"));
 
-        //Red
+        Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_B_2_ACTION(mecanumDrive, "center", pixelDrop));
+
+        //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_B_3_ACTION(mecanumDrive, "center"));
+
+        //R4
+        /*
         Actions.runBlocking(mecanumDrive.actionBuilder(beginPose)
                 //.strafeTo(new Vector2d(-48,-36))
                 .strafeTo(Constants.R_4_STRAFE_RELEASE_PIXEL_LEFT)
-                //.afterDisp(10, pixelDrop.release())
+                .afterDisp(10, pixelDrop.release())
                 //.strafeTo(new Vector2d(-36,-60))
                 .strafeTo(Constants.R_4_STRAFE_BACK)
                 //.strafeTo(new Vector2d(12,-60))
@@ -51,10 +89,38 @@ public class RobonautsAutonomous extends LinearOpMode {
                 //.strafeTo(new Vector2d(24,-60))
                 .build());
 
+        //B3
+        Actions.runBlocking(mecanumDrive.actionBuilder(beginPose)
+                //.strafeTo(new Vector2d(-48,-36))
+                .strafeTo(Constants.B_3_STRAFE_RELEASE_PIXEL_LEFT)
+                .afterDisp(10, pixelDrop.release())
+                //.strafeTo(new Vector2d(-36,-60))
+                .strafeTo(Constants.B_3_STRAFE_BACK)
+                //.strafeTo(new Vector2d(12,-60))
+                //.setTangent(0)
+                //.splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
+                .splineToLinearHeading(Constants.B_3_SPLINE_BB, Constants.B_3_HEADING_BB)
+                //       .turn(Math.toRadians(-90))
+                //.strafeTo(new Vector2d(24,-60))
+                .build());
 
 
+        Actions.runBlocking(mecanumDrive.actionBuilder(beginPose)
+                //.strafeTo(new Vector2d(-48,-36))
+                .strafeTo(Constants.B_2_STRAFE_RELEASE_PIXEL_LEFT)
+                //.afterDisp(10, pixelDrop.release())
+                //.strafeTo(new Vector2d(-36,-60))
+                .strafeTo(Constants.B_2_STRAFE_BACK)
+                .strafeTo(Constants.B_2_STRAFE_BB)
+                //.strafeTo(new Vector2d(12,-60))
+                //.setTangent(0)
+                //.splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
+                .splineToLinearHeading(Constants.B_2_SPLINE_BB, Constants.B_2_HEADING_BB)
+                //       .turn(Math.toRadians(-90))
+                //.strafeTo(new Vector2d(24,-60))
+                .build());
 
-
+*/
 
 
 /*

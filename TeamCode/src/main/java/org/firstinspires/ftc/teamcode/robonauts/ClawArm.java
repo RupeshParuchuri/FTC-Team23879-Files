@@ -51,8 +51,7 @@ public class ClawArm {
         armMotor.setPower(power);
     }
     public double moveTo(int targetExtendPosition) {
-        //while (Math.abs(targetExtendPosition - armMotor.getCurrentPosition()) >= 5) {
-        //while (true) {
+
             pidController.setPID(kp,ki,kd);
             int armPos = armMotor.getCurrentPosition();
 
@@ -74,12 +73,7 @@ public class ClawArm {
             armMotor.setPower(power);
 
             telemetry.update();
-/*            if (targetExtendPosition - armMotor.getCurrentPosition() == 0) {
-                telemetry.addData("Target reached ....returning", armMotor.getCurrentPosition() );
-                return power ;
-            }*/
-       // }
-        return power;
+            return power;
     }
 
     public void extend() {

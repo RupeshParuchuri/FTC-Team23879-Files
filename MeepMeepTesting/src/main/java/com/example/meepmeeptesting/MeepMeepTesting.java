@@ -17,9 +17,12 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(90), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, -36, 0))
-                .strafeTo(new Vector2d(-12,0))
-                .lineToX(12)
+        myBot.runAction(myBot.getDrive().actionBuilder(Constants.R_1_BEGIN_POSE)
+                .strafeTo(Constants.R_1_STRAFE_RELEASE_PIXEL_LEFT)
+                        .strafeTo(Constants.R_1_STRAFE_BACK)
+                        .strafeTo(Constants.R_1_STRAFE_BB)
+                        .splineToLinearHeading(Constants.R_1_SPLINE_BB, Constants.R_1_HEADING_BB)
+                        .strafeTo(Constants.R_PARK_BB)
 
                 .build());
 

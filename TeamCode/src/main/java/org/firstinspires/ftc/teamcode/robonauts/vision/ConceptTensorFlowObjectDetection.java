@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.robonauts.vision;
 
+import android.util.Size;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -56,14 +58,20 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "model_20240113_093340.tflite";
+    private static final String TFOD_MODEL_ASSET = "model_20240119_210341.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240113_093340.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240120_190429.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-       "trashcan"
-    };
+            "B5-23879",
+            "B7-23879",
+            "B8-23879",
+            "B9-23879",
+            "R5-23879",
+            "R7-23879",
+            "R8-23879",
+            "R9-23879"   };
 
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
@@ -84,6 +92,8 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
        // OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam((WebcamName) hardwareMap.get(WebcamName.class, "c920-webcam"));
         //dashboard.startCameraStream();
         // Wait for the DS start button to be touched.
+        //FtcDashboard.getInstance().startCameraStream(visionPortal.);
+
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
@@ -151,7 +161,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         }
 
         // Choose a camera resolution. Not all cameras support all resolutions.
-        //builder.setCameraResolution(new Size(640, 480));
+        builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
         //builder.enableLiveView(true);

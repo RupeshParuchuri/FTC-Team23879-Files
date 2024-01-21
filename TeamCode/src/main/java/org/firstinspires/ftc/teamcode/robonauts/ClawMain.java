@@ -42,15 +42,15 @@ public class ClawMain {
     }
 
     public void releaseClaw() {
-        clawRight.setDirection(Servo.Direction.REVERSE);
+        //clawRight.setDirection(Servo.Direction.REVERSE);
         //clawLeft.setPosition(0.5);
-        clawRight.setPosition(0);
+        clawRight.setPosition(0.5);
     }
 
     public void grab() {
         //clawMainServo.setPosition(1.0);
         clawLeft.setPosition(0.5);
-        clawRight.setPosition(0.5);
+        clawRight.setPosition(1);
     }
     public void stop() {
         clawMainServo.setPower(0);

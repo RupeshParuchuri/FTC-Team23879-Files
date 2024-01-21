@@ -27,7 +27,7 @@ public class PixelDrop {
     public void releasePixel() {
         //clawDrop.setDirection(Servo.Direction.REVERSE);
         //clawLeft.setPosition(0.5);
-        clawDrop.setPosition(0);
+        clawDrop.setPosition(0.5);
 
     }
 
@@ -47,7 +47,7 @@ public class PixelDrop {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if (clawDrop.getPosition() == 0) {
+            if (clawDrop.getPosition() == 1) {
                 return false;
             } else {
                 return true;

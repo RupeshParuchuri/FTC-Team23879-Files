@@ -1,20 +1,27 @@
 package org.firstinspires.ftc.teamcode.robonauts;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.ftc.Encoder;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@TeleOp
-@Config
-public class PIDSlidesTuning extends OpMode {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+public class LinearSlides {
+    DcMotorEx leftMotor = null;
+    DcMotorEx rightMotor = null;
+
+    HardwareMap hardwareMap;
+
+    Telemetry telemetry;
+
     private PIDController pidController=null;
     public static  double kp=0.0012;//0.77;
     public static  double ki=0;//0.003;
@@ -22,19 +29,20 @@ public class PIDSlidesTuning extends OpMode {
 
     public static double kf=-0.0003;//0.03;
 
-    public static int targetMotorPosition=-2000;
-
-    //public static int targetDeg=0;
     private final double ticksPerDegree=537.7 / 360;
-    public Encoder armMotorEncoder;
-    DcMotorEx leftMotor = null;
-    DcMotorEx rightMotor = null;
+
+    private int targetPosition;
+
+    private String pixelState;
 
 
-    @Override
-    public void init() {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+    public LinearSlides(HardwareMap hardwareMap, Telemetry telemetry, int targetPosition, String pixelState) {
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
+        this.targetPosition = targetPosition;
+        this.pixelState = pixelState;
         pidController = new PIDController(kp, ki,kd);
+        //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         leftMotor = hardwareMap.get(DcMotorEx.class, "par0");
         leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -48,16 +56,14 @@ public class PIDSlidesTuning extends OpMode {
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
-    @Override
-    public void loop() {
-        pidController.setPID(kp,ki,kd);
+    public void moveTo(double targetMotorPosition) {
         int leftArmPos =  leftMotor.getCurrentPosition();
         //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
         double leftPid = pidController.calculate(leftArmPos, targetMotorPosition);
         // double feedforward = Math.cos(Math.toRadians(targetMotorPosition / ticksPerDegree)) * kf;
-        double angel = 50;
         double feedforward = kf;
         double leftpower = leftPid + feedforward;
 
@@ -78,6 +84,24 @@ public class PIDSlidesTuning extends OpMode {
         telemetry.addData("Left slide current position : " , leftArmPos);
         telemetry.addData("Right slide current position : ", rightMotor.getCurrentPosition());
         telemetry.addData("target position : ", targetMotorPosition);
+        telemetry.update();
+    }
 
+    public class ExtendToDropAtSpikeAction implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            moveTo(targetPosition);
+            if (pixelState.equalsIgnoreCase("CLAW_RELEASED")) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public Action extendToDropAtSpike() {
+        return new LinearSlides.ExtendToDropAtSpikeAction();
     }
 }
