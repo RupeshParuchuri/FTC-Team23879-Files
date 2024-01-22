@@ -25,7 +25,7 @@ public class LinearSlides {
     private PIDController pidController=null;
     public static  double kp=0.0012;//0.77;
     public static  double ki=0;//0.003;
-    public static  double kd=0.00025;//0.004;
+    public static  double kd=0;//0.004;
 
     public static double kf=-0.0003;//0.03;
 
@@ -35,20 +35,35 @@ public class LinearSlides {
 
     private String pixelState;
 
+    private ClawArm clawArm;
+
+    private  ClawMain clawMain;
+
 
     public LinearSlides(HardwareMap hardwareMap, Telemetry telemetry, int targetPosition, String pixelState) {
+        this(hardwareMap, telemetry, targetPosition, pixelState, null, null);
+    }
+
+    public LinearSlides(HardwareMap hardwareMap, Telemetry telemetry, int targetPosition,
+                        String pixelState, ClawArm clawArm, ClawMain clawMain) {
+
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.targetPosition = targetPosition;
         this.pixelState = pixelState;
+
         pidController = new PIDController(kp, ki,kd);
         //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        this.clawArm = clawArm;
+        this.clawMain = clawMain;
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        pidController = new PIDController(kp, ki,kd);
 
         leftMotor = hardwareMap.get(DcMotorEx.class, "par0");
         leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         rightMotor = hardwareMap.get(DcMotorEx.class, "par1");
-        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,7 +74,7 @@ public class LinearSlides {
 
     }
 
-    public void moveTo(double targetMotorPosition) {
+    public double moveTo(double targetMotorPosition) {
         int leftArmPos =  leftMotor.getCurrentPosition();
         //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
         double leftPid = pidController.calculate(leftArmPos, targetMotorPosition);
@@ -71,10 +86,7 @@ public class LinearSlides {
         double rightPid = pidController.calculate(rightArmPos, targetMotorPosition);
 
         double rightpower = rightPid + feedforward;
-        if (Math.abs(rightArmPos) > Math.abs(targetMotorPosition)) {
-            rightpower=feedforward;
-            leftpower=feedforward;
-        }
+
         leftMotor.setPower(rightpower);
         rightMotor.setPower(rightpower);
         telemetry.addData("Feed Forward : " , feedforward);
@@ -85,6 +97,7 @@ public class LinearSlides {
         telemetry.addData("Right slide current position : ", rightMotor.getCurrentPosition());
         telemetry.addData("target position : ", targetMotorPosition);
         telemetry.update();
+        return rightpower;
     }
 
     public class ExtendToDropAtSpikeAction implements Action {
@@ -93,6 +106,7 @@ public class LinearSlides {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             moveTo(targetPosition);
+
             if (pixelState.equalsIgnoreCase("CLAW_RELEASED")) {
                 return false;
             } else {
@@ -101,7 +115,29 @@ public class LinearSlides {
         }
     }
 
+    public class ExtendToDropAtBoard implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            moveTo(targetPosition);
+            //Thread.sleep(100);
+            //clawArm.extend();
+            //clawMain.releaseClaw();
+            return true;
+            /*if (pixelState.equalsIgnoreCase("CLAW_RELEASED")) {
+                return false;
+            } else {
+                return true;
+            }*/
+        }
+    }
+
     public Action extendToDropAtSpike() {
         return new LinearSlides.ExtendToDropAtSpikeAction();
+    }
+
+    public Action extendToDropAtBoard() {
+        return new LinearSlides.ExtendToDropAtBoard();
     }
 }

@@ -27,6 +27,22 @@ public class RobonautsAutonomous extends LinearOpMode {
         waitForStart();
         long startTimeInMilli = System.currentTimeMillis();
         String spikeLocation = "right";
+        Pose2d beginPose = Constants.B_2_BEGIN_POSE;
+        MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
+        Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
+        Context context = new Context();
+
+        ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -280, context);
+        ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
+        PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
+
+
+        LinearSlides linearSlides = new LinearSlides(hardwareMap, telemetry, -2000, "hold", clawArm, clawMain);
+        Actions.runBlocking(
+
+                org.firstinspires.ftc.teamcode.robonauts.Actions.releasePixelAtBoardAction(mecanumDrive, "center", pixelDrop, linearSlides, clawArm, clawMain)
+        );
+
         while (opModeIsActive()) {
             sleep(20);
 
@@ -53,24 +69,13 @@ public class RobonautsAutonomous extends LinearOpMode {
         telemetry.update();
         //sleep(7000);
        // Pose2d beginPose = new Pose2d(-36, -60, Math.PI/2);
-        Pose2d beginPose = Constants.B_2_BEGIN_POSE;
-        MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
-        Drive drive = new Drive(mecanumDrive, hardwareMap, beginPose);
-        Context context = new Context();
 
-        ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
-        ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
-        PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
-        Pose2d pose = Constants.R_4_BEGIN_POSE;//new Pose2d(-36, -60,-90);
-        Pose2d poseAfterDrop = new Pose2d(-24, -50,90);
-        LinearSlides linearSlides = new LinearSlides(hardwareMap, telemetry, -1500, "hold");
         //R1
         //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_R_1_ACTION(mecanumDrive, "center"));
         //R4
         //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_R_4_ACTION(mecanumDrive, "center"));
 
-        Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_B_2_ACTION(mecanumDrive, "center", pixelDrop));
-
+        //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_B_2_ACTION(mecanumDrive, "center", pixelDrop, linearSlides, clawArm, clawMain));
         //Actions.runBlocking(org.firstinspires.ftc.teamcode.robonauts.Actions.get_B_3_ACTION(mecanumDrive, "center"));
 
         //R4

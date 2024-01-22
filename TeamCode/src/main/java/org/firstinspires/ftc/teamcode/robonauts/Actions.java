@@ -78,7 +78,8 @@ public class Actions {
                 .build();
     }
 
-    public static Action get_B_2_ACTION (MecanumDrive mecanumDrive, String direction, PixelDrop pixelDrop) {
+    public static Action get_B_2_ACTION (MecanumDrive mecanumDrive, String direction, PixelDrop pixelDrop,
+                                         LinearSlides linearSlides, ClawArm clawArm, ClawMain clawMain) {
         Context context = new Context();
 
         Vector2d spikeLocation = Constants.B_2_STRAFE_RELEASE_PIXEL_CENTER;
@@ -90,7 +91,7 @@ public class Actions {
         return mecanumDrive.actionBuilder(Constants.B_2_BEGIN_POSE)
                 //.strafeTo(new Vector2d(-48,-36))
                 .strafeTo(spikeLocation)
-                .afterDisp(10, pixelDrop.release())
+                .afterDisp(0.5, pixelDrop.release())
                 //.strafeTo(new Vector2d(-36,-60))
                 .strafeTo(Constants.B_2_STRAFE_BACK)
                 .strafeTo(Constants.B_2_STRAFE_BB)
@@ -98,9 +99,25 @@ public class Actions {
                 //.splineToLinearHeading(new Pose2d(24,-36,0), Math.PI/2)
                 .splineToLinearHeading(Constants.B_2_SPLINE_BB, Constants.B_2_HEADING_BB)
                 .strafeTo(Constants.B_BEFORE_PARK_BB)
+                .afterDisp(0.5, linearSlides.extendToDropAtSpike())
                 //       .turn(Math.toRadians(-90))
                 //.strafeTo(new Vector2d(24,-60))
                 .strafeTo(Constants.B_PARK_BB)
+
+                .build();
+    }
+
+    public static Action releasePixelAtBoardAction (MecanumDrive mecanumDrive, String direction, PixelDrop pixelDrop,
+                                         LinearSlides linearSlides, ClawArm clawArm, ClawMain clawMain) {
+        Context context = new Context();
+
+
+        return mecanumDrive.actionBuilder(Constants.B_2_BEGIN_POSE)
+                //.strafeTo(new Vector2d(-48,-36))
+                .strafeTo(new Vector2d(-36.5, 60))
+                .afterDisp(0.5, linearSlides.extendToDropAtBoard())
+                .afterTime(1, clawArm.extendToDropAtBoard())
+                .afterTime(3, clawMain.release())
 
                 .build();
     }

@@ -77,7 +77,7 @@ public class ClawArm {
     }
 
     public void extend() {
-        //moveTo(-400);
+        moveTo(-300);
     }
 
     public void release() {
@@ -93,16 +93,22 @@ public class ClawArm {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            moveTo(targetPosition);
-            if (robotState.getRobotState().equalsIgnoreCase("CLAW_RELEASED")) {
+            moveTo(500);
+            /*if (robotState.getRobotState().equalsIgnoreCase("CLAW_RELEASED")) {
                 return false;
             } else {
                 return true;
-            }
+            }*/
+            return true;
+
         }
     }
 
     public Action extendToDropAtSpike() {
+        return new ExtendToDropAtSpikeAction();
+    }
+
+    public Action extendToDropAtBoard() {
         return new ExtendToDropAtSpikeAction();
     }
 }

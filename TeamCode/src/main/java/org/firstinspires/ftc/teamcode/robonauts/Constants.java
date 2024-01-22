@@ -35,7 +35,7 @@ public class Constants {
     public static final Vector2d B_2_STRAFE_RELEASE_PIXEL_LEFT = new Vector2d(-20, 32);
     public static final Vector2d B_2_STRAFE_RELEASE_PIXEL_RIGHT = new Vector2d(-44, 32);
     public static final Vector2d B_2_STRAFE_RELEASE_PIXEL_CENTER = new Vector2d(-36, 32);
-    public static final Vector2d B_2_STRAFE_BACK = new Vector2d(-36, 57);
+    public static final Vector2d B_2_STRAFE_BACK = new Vector2d(-36, 55);
     public static final Vector2d B_2_STRAFE_BB = new Vector2d(24, 55);
     public static final Pose2d B_2_SPLINE_BB = new Pose2d( new Vector2d(45, 32), 0);
     public static final double B_2_HEADING_BB = -Math.PI/2;
