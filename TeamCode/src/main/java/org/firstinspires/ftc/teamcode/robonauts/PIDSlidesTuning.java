@@ -29,7 +29,7 @@ public class PIDSlidesTuning extends OpMode {
     public static int targetMotorPosition=-2000;
 
     //public static int targetDeg=0;
-    private final double ticksPerDegree=537.7 / 360;
+        private final double ticksPerDegree=537.7 / 360;
     public Encoder armMotorEncoder;
     DcMotorEx leftMotor = null;
     DcMotorEx rightMotor = null;

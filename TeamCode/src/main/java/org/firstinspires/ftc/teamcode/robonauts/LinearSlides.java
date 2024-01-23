@@ -100,6 +100,9 @@ public class LinearSlides {
         return rightpower;
     }
 
+    public void setTargetPosition (int targetPosition) {
+        this.targetPosition = targetPosition;
+    }
     public class ExtendToDropAtSpikeAction implements Action {
         private boolean initialized = false;
 

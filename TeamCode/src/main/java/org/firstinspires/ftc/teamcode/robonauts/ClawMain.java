@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import java.util.Timer;
 
 public class ClawMain {
-    Servo clawMainServo = null;
+    CRServo clawMainServo = null;
     Servo clawLeft = null;
 
     Servo clawRight = null;
@@ -24,8 +24,10 @@ public class ClawMain {
     long startTimeMillis;
     Context robotState;
 
+    private double power;
+
     public ClawMain(HardwareMap hardwareMap, long startTimeMillis, Context robotState) {
-        this.clawMainServo=hardwareMap.get(Servo.class, "clawMain");
+        this.clawMainServo=hardwareMap.get(CRServo.class, "clawMain");
         this.clawLeft = hardwareMap.get(Servo.class, "clawLeft");
         this.clawRight = hardwareMap.get(Servo.class, "clawRight");
         this.clawDrop = hardwareMap.get(Servo.class,"clawDrop");
@@ -49,6 +51,10 @@ public class ClawMain {
         clawLeft.setPosition(0);
         clawRight.setPosition(1);
     }
+
+    public void setPower(double power) {
+        this.clawMainServo.setPower(power);
+    }
     public class ReleaseToDropAtSpikeAction implements Action {
         private boolean initialized = false;
 
@@ -56,7 +62,7 @@ public class ClawMain {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
             //if (System.currentTimeMillis() - startTimeMillis >= 4000) {
-            clawMainServo.setPosition(1);
+            clawMainServo.setPower(power);
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -64,9 +70,9 @@ public class ClawMain {
             }
             releaseClaw();
 
-            robotState.setRobotState("CLAW_RELEASED");
+           // robotState.setRobotState("CLAW_RELEASED");
 
-            telemetryPacket.put("Time greater than 4000...Releasing...", System.currentTimeMillis());
+            telemetryPacket.put("Power...", power);
 
             return true;
 

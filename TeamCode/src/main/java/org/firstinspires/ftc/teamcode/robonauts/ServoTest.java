@@ -23,14 +23,14 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         waitForStart();
         Servo clawDrop = hardwareMap.get(Servo.class,"clawDrop");
-        Servo clawMain = hardwareMap.get(Servo.class,"clawMain");
+        CRServo clawMain = hardwareMap.get(CRServo.class,"clawMain");
         Servo clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         Servo clawRight = hardwareMap.get(Servo.class,"clawRight");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Claw drop Position before:", clawDrop.getPosition());
         telemetry.addData("Claw left Position before:", clawLeft.getPosition());
         telemetry.addData("Claw right Position before:", clawRight.getPosition());
-        telemetry.addData("Claw main Position before:", clawMain.getPosition());
+        telemetry.addData("Claw main Position before:", clawMain.getPower());
 
         clawLeft.setDirection(Servo.Direction.REVERSE);
         long timeInMilli = System.currentTimeMillis();
@@ -45,8 +45,8 @@ public class ServoTest extends LinearOpMode {
                 clawDrop.setPosition(position);
 
             } else if (servoName.equalsIgnoreCase("main")) {
-                clawMain.setDirection(Servo.Direction.REVERSE);
-                clawMain.setPosition(position);
+                //clawMain.setDirection(Servo.Direction.REVERSE);
+                clawMain.setPower(-gamepad1.left_stick_y);
             }
 
     ///claw right 0.5 is claw release position  and 1 is clawpickup position.
@@ -56,7 +56,10 @@ public class ServoTest extends LinearOpMode {
             telemetry.addData("Claw drop Position after:", clawDrop.getPosition());
             telemetry.addData("Claw left Position after:", clawLeft.getPosition());
             telemetry.addData("Claw right Position after:", clawRight.getPosition());
-            telemetry.addData("Claw Main Position after:", clawMain.getPosition());
+            telemetry.addData("Claw Main Position after:", clawMain.getPower());
+            telemetry.addData("-gamepad1.left_stick_y:", -gamepad1.left_stick_y);
+
+
             telemetry.update();
         }
     }
