@@ -37,7 +37,7 @@ public class RobonautsAutonomous extends LinearOpMode {
         PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
 
 
-        LinearSlides linearSlides = new LinearSlides(hardwareMap, telemetry, -2000, "hold", clawArm, clawMain);
+        LinearSlides linearSlides = new LinearSlides(hardwareMap, telemetry, -2000, "hold");
         Actions.runBlocking(
 
                 org.firstinspires.ftc.teamcode.robonauts.Actions.releasePixelAtBoardAction(mecanumDrive, "center", pixelDrop, linearSlides, clawArm, clawMain)

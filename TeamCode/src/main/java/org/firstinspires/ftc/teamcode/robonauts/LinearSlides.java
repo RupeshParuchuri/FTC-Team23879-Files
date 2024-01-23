@@ -35,17 +35,13 @@ public class LinearSlides {
 
     private String pixelState;
 
-    private ClawArm clawArm;
-
-    private  ClawMain clawMain;
+    private double powerLimit;
 
 
-    public LinearSlides(HardwareMap hardwareMap, Telemetry telemetry, int targetPosition, String pixelState) {
-        this(hardwareMap, telemetry, targetPosition, pixelState, null, null);
-    }
+
 
     public LinearSlides(HardwareMap hardwareMap, Telemetry telemetry, int targetPosition,
-                        String pixelState, ClawArm clawArm, ClawMain clawMain) {
+                        String pixelState) {
 
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -54,8 +50,7 @@ public class LinearSlides {
 
         pidController = new PIDController(kp, ki,kd);
         //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        this.clawArm = clawArm;
-        this.clawMain = clawMain;
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         pidController = new PIDController(kp, ki,kd);
 
@@ -100,9 +95,41 @@ public class LinearSlides {
         return rightpower;
     }
 
+    public double moveTo() {
+        int leftArmPos =  leftMotor.getCurrentPosition();
+        //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
+        double leftPid = pidController.calculate(leftArmPos, targetPosition);
+        // double feedforward = Math.cos(Math.toRadians(targetMotorPosition / ticksPerDegree)) * kf;
+        double feedforward = kf;
+        double leftpower = leftPid + feedforward;
+
+        int rightArmPos =  rightMotor.getCurrentPosition();
+        double rightPid = pidController.calculate(rightArmPos, targetPosition);
+
+        double rightpower = rightPid + feedforward;
+        rightpower = rightpower < -powerLimit ? -powerLimit : rightpower > powerLimit ? powerLimit : rightpower;
+
+        leftMotor.setPower(rightpower);
+        rightMotor.setPower(rightpower);
+        telemetry.addData("Feed Forward : " , feedforward);
+        telemetry.addData("Left Power : " , leftpower);
+        telemetry.addData("right Power : " , rightpower);
+
+        telemetry.addData("Left slide current position : " , leftArmPos);
+        telemetry.addData("Right slide current position : ", rightMotor.getCurrentPosition());
+        telemetry.addData("target position : ", targetPosition);
+        telemetry.update();
+        return rightpower;
+    }
+
     public void setTargetPosition (int targetPosition) {
         this.targetPosition = targetPosition;
     }
+    public void setTargetPosition (int targetPosition, double powerLimit) {
+        this.targetPosition = targetPosition;
+        this.powerLimit = powerLimit;
+    }
+
     public class ExtendToDropAtSpikeAction implements Action {
         private boolean initialized = false;
 
@@ -124,15 +151,8 @@ public class LinearSlides {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             moveTo(targetPosition);
-            //Thread.sleep(100);
-            //clawArm.extend();
-            //clawMain.releaseClaw();
             return true;
-            /*if (pixelState.equalsIgnoreCase("CLAW_RELEASED")) {
-                return false;
-            } else {
-                return true;
-            }*/
+
         }
     }
 

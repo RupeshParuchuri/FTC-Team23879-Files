@@ -70,7 +70,7 @@ public class ClawArm {
             telemetry.addData("targetExtendPosition", targetExtendPosition);
 
             //armMotor.setTargetPosition(targetExtendPosition);
-            armMotor.setPower(power);
+            setPower(power);
 
             telemetry.update();
             return power;
