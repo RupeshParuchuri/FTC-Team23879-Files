@@ -94,8 +94,12 @@ public class RobonautsTeleop extends LinearOpMode {
             }
 //////////////////////////////end slider position//////////////////////////
             ////////////////////////begin arm handling//////////////////////
-            clawArm.moveTo(-400);
-            clawArm.moveTo(-50);
+            double armpower = -gamepad2.right_stick_x;
+            armpower = Math.abs(armpower) >= 0 ? armpower : 0.0;
+            clawArm.setPower(armpower);
+            clawArm.moveTo();
+            //clawArm.moveTo(-400);
+            //clawArm.moveTo(-50);
             //////////////////////end arm handling/////////////////////////////////
         }
     }

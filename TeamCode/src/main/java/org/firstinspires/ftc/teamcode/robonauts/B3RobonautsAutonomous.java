@@ -2,22 +2,16 @@ package org.firstinspires.ftc.teamcode.robonauts;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.sun.tools.javac.util.StringUtils;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robonauts.vision.ObjectDetection;
 
 @Autonomous
-public class RobonautsAutonomous extends LinearOpMode {
+public class B3RobonautsAutonomous extends LinearOpMode {
     String robotState = "START";
     @Override
     public void runOpMode() throws InterruptedException {

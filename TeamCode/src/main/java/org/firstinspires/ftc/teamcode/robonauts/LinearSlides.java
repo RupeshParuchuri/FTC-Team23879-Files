@@ -69,6 +69,25 @@ public class LinearSlides {
 
     }
 
+    public void setPower(double power)
+    {
+        if (power > 0.0)
+        {
+            // Move elevator towards max position with specified power.
+            setTargetPosition(-2000, power);
+        }
+        else if (power < 0.0)
+        {
+            // Move elevator towards min position with specified power.
+            setTargetPosition(-100, power);
+        }
+        else
+        {
+            // Hold elevator position without power limit.
+            setTargetPosition(targetPosition, 1.0);
+        }
+    }
+
     public double moveTo(double targetMotorPosition) {
         int leftArmPos =  leftMotor.getCurrentPosition();
         //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
@@ -125,6 +144,7 @@ public class LinearSlides {
     public void setTargetPosition (int targetPosition) {
         this.targetPosition = targetPosition;
     }
+
     public void setTargetPosition (int targetPosition, double powerLimit) {
         this.targetPosition = targetPosition;
         this.powerLimit = powerLimit;
@@ -156,11 +176,17 @@ public class LinearSlides {
         }
     }
 
+
     public Action extendToDropAtSpike() {
         return new LinearSlides.ExtendToDropAtSpikeAction();
     }
 
-    public Action extendToDropAtBoard() {
+    public Action extend() {
+        return new LinearSlides.ExtendToDropAtBoard();
+    }
+
+    public Action setPosition(int targetPosition) {
+        this.targetPosition = targetPosition;
         return new LinearSlides.ExtendToDropAtBoard();
     }
 }

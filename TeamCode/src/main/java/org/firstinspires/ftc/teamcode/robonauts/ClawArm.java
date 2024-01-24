@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -31,7 +32,37 @@ public class ClawArm {
     //public static int targetDeg=0;
     private final double ticksPerDegree=1425.1 / 360;
     private Telemetry telemetry;
+    private double powerLimit=0.5;
 
+    public int getTargetPosition() {
+        return targetPosition;
+    }
+
+    public void setTargetPosition(int targetPosition) {
+        this.targetPosition = targetPosition;
+    }
+    public void setTargetPosition (int targetPosition, double powerLimit) {
+        this.targetPosition = targetPosition;
+        this.powerLimit = powerLimit;
+    }
+    public void setPower(double power)
+    {
+        if (power > 0.0)
+        {
+            // Move elevator towards max position with specified power.
+            setTargetPosition(-400, power);
+        }
+        else if (power < 0.0)
+        {
+            // Move elevator towards min position with specified power.
+            setTargetPosition(-100, power);
+        }
+        else
+        {
+            // Hold elevator position without power limit.
+            setTargetPosition(targetPosition, 1.0);
+        }
+    }
     private int targetPosition;
 
     private Context robotState;
@@ -47,9 +78,8 @@ public class ClawArm {
         this.targetPosition = targetPosition;
         this.robotState = robotState;
     }
-    public void setPower(double power) {
-        armMotor.setPower(power);
-    }
+
+    // This is called in automomous.
     public double moveTo(int targetExtendPosition) {
 
             pidController.setPID(kp,ki,kd);
@@ -69,12 +99,39 @@ public class ClawArm {
             telemetry.addData("power", power);
             telemetry.addData("targetExtendPosition", targetExtendPosition);
 
-            //armMotor.setTargetPosition(targetExtendPosition);
-            setPower(power);
+            armMotor.setPower(power);
 
             telemetry.update();
             return power;
     }
+
+    //teleop...limiting the power
+    public double moveTo() {
+
+        pidController.setPID(kp,ki,kd);
+        int armPos = armMotor.getCurrentPosition();
+
+        //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
+        double pid = pidController.calculate(armPos, targetPosition);
+        telemetry.addData("PID", pid);
+        // double feedforward = Math.cos(Math.toRadians(targetMotorPosition / ticksPerDegree)) * kf;
+        double angel = armPos / ticksPerDegree + zeroOffset;
+        double feedforward = Math.sin(Math.toRadians(angel)) * kf;
+        telemetry.addData("feed forward", feedforward);
+        telemetry.addData("arm position:",armPos);
+        telemetry.addData("angle",angel);
+        double armPositionInDeg = armPos / ticksPerDegree + zeroOffset;
+        double power = pid + feedforward;
+        //power = Range.clip(power, -powerLimit, powerLimit);
+        telemetry.addData("power", power);
+        telemetry.addData("targetExtendPosition", targetPosition);
+
+        armMotor.setPower(power);
+
+        telemetry.update();
+        return power;
+    }
+
 
     public void extend() {
         moveTo(-300);
@@ -93,20 +150,13 @@ public class ClawArm {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            moveTo(500);
-            /*if (robotState.getRobotState().equalsIgnoreCase("CLAW_RELEASED")) {
-                return false;
-            } else {
-                return true;
-            }*/
+            moveTo(targetPosition);
+
             return true;
 
         }
     }
 
-    public Action extendToDropAtSpike() {
-        return new ExtendToDropAtSpikeAction();
-    }
 
     public Action extendToDropAtBoard() {
         return new ExtendToDropAtSpikeAction();
