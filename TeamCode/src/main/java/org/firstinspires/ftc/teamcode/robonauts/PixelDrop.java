@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -24,12 +23,6 @@ public class PixelDrop {
 
 
 
-    public void releasePixel() {
-        //clawDrop.setDirection(Servo.Direction.REVERSE);
-        //clawLeft.setPosition(0.5);
-        clawDrop.setPosition(1);
-
-    }
 
 
 
@@ -41,24 +34,61 @@ public class PixelDrop {
             if (!initialized) {
                 initialized = true;
             }
-            releasePixel();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            if (clawDrop.getPosition() == 1) {
-                clawDrop.setPosition(0);
+           // releasePixel();
+            clawDrop.setPosition(0.8);
 
-                return false;
-            } else {
-                return true;
-            }
+            return false;
+
+
 
         }
     }
+
+    public Action releasePixel() {
+        return new Action() {
+            private boolean initialized = false;
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    initialized = true;
+                }
+                clawDrop.setPosition(0.8);
+                if (clawDrop.getPosition() == 0.8 ) {
+                    return false;
+                } else {
+                    return true;
+                }
+
+
+            }
+        };
+    }
+    public Action resetPixel() {
+        return new Action() {
+            private boolean initialized = false;
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    initialized = true;
+                }
+                clawDrop.setPosition(0.5);
+                if (clawDrop.getPosition() == 0.5 ) {
+                    return false;
+                } else {
+                    return true;
+                }
+
+
+            }
+        };
+    }
+
     public Action release() {
         return new ReleaseToDropAtSpikeAction();
+    }
+
+    public void reset() {
+        clawDrop.setPosition(1);
     }
 
 }

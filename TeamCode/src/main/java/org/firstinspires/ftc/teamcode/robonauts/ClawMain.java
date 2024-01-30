@@ -26,14 +26,13 @@ public class ClawMain {
 
     private double power;
 
+    private int count = 0;
+
     public ClawMain(HardwareMap hardwareMap, long startTimeMillis, Context robotState) {
         this.clawMainServo=hardwareMap.get(CRServo.class, "clawMain");
         this.clawLeft = hardwareMap.get(Servo.class, "clawLeft");
         this.clawRight = hardwareMap.get(Servo.class, "clawRight");
         this.clawDrop = hardwareMap.get(Servo.class,"clawDrop");
-        clawDrop.resetDeviceConfigurationForOpMode();
-        clawLeft.resetDeviceConfigurationForOpMode();
-        clawRight.resetDeviceConfigurationForOpMode();
         this.startTimeMillis = startTimeMillis;
         this.robotState = robotState;
     }
@@ -41,10 +40,8 @@ public class ClawMain {
 
 
     public void releaseClaw() {
-        //clawRight.setDirection(Servo.Direction.REVERSE);
-        clawLeft.setPosition(0.7);
-
-        clawRight.setPosition(0.7);
+        clawLeft.setPosition(0.2);
+        clawRight.setPosition(0.8);
     }
 
     public void grab() {
@@ -52,35 +49,65 @@ public class ClawMain {
         clawRight.setPosition(1);
     }
 
+    public void setTimeToOperate(long time) {
+        this.startTimeMillis = time;
+    }
+
     public void setPower(double power) {
         this.clawMainServo.setPower(power);
     }
+
+    public void setRobotState() {
+        this.robotState.setRobotState("MAINCLAWEXTENDED");
+    }
+
     public class ReleaseToDropAtSpikeAction implements Action {
         private boolean initialized = false;
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //if (System.currentTimeMillis() - startTimeMillis >= 4000) {
-            clawMainServo.setPower(power);
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            if (!initialized) {
+                initialized = true;
             }
-            releaseClaw();
+            telemetryPacket.put("Current State in ClawMain...",  robotState.getRobotState() + System.currentTimeMillis());
 
-           // robotState.setRobotState("CLAW_RELEASED");
 
-            telemetryPacket.put("Power...", power);
-
-            return true;
-
+            if (clawLeft.getPosition() == 0.2 || clawRight.getPosition() == 0.8) {
+                return false;
+            } else {
+                return true;
+            }
 
         }
     }
-    public Action release() {
+
+
+
+    public class PickUpClawAction implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                initialized = true;
+            }
+
+            //clawMainServo.setPosition(1);
+            grab();
+            if (clawLeft.getPosition() == 0 && clawRight.getPosition() == 1) {
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+    }
+
+
+    public Action releaseClawAction() {
+        //clawMainServo.setPosition(position);
         return new ReleaseToDropAtSpikeAction();
+
     }
 
 }

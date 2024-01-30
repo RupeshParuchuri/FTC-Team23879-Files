@@ -20,8 +20,8 @@ public class CameraTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         redPropThreshold = new RedPropThreshold();
-        Scalar lower = new Scalar(150, 100, 100); // the lower hsv threshold for your detection
-        Scalar upper = new Scalar(180, 255, 255); // the upper hsv threshold for your detection
+        Scalar lower = new Scalar(110, 50, 50); // the lower hsv threshold for your detection
+        Scalar upper = new Scalar(130, 255, 255);// the upper hsv threshold for your detection
         double minArea = 100; // the minimum area for the detection to consider for your prop
 
         colourMassDetectionProcessor = new ColourMassDetectionProcessor(

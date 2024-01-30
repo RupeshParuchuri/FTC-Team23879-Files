@@ -14,8 +14,17 @@ import org.opencv.core.Scalar;
 public class EnhancedColourMassDetectionOpMode extends OpMode {
 	private VisionPortal visionPortal;
 	private EnhancedColourMassDetectionProcessor colourMassDetectionProcessor;
-	
-	/**
+
+	 private double lowerH = 150; // the lower hsv threshold for your detection
+	 private double upperH = 180; // the upper hsv threshold for your detection
+
+
+	 public EnhancedColourMassDetectionOpMode(double lowerH, double upperH) {
+		 this.lowerH = lowerH;
+		 this.upperH = upperH;
+	 }
+
+	 /**
 	 * User-defined init method
 	 * <p>
 	 * This method will be called once, when the INIT button is pressed.
@@ -28,14 +37,14 @@ public class EnhancedColourMassDetectionOpMode extends OpMode {
 		// the domains are: ([0, 180], [0, 255], [0, 255])
 		// this is tuned to detect red, so you will need to experiment to fine tune it for your robot
 		// and experiment to fine tune it for blue
-		double lowerH = 150; // the lower hsv threshold for your detection
-		double upperH = 180; // the upper hsv threshold for your detection
-		double minArea = 100; // the minimum area for the detection to consider for your prop
+		  // the lower hsv threshold for your detection
+		//double upperRedH = 180; // the upper hsv threshold for your detection
+		//double minRedArea = 90; // the minimum area for the detection to consider for your prop
 		
 		colourMassDetectionProcessor = new EnhancedColourMassDetectionProcessor(
 				lowerH,
 				upperH,
-				() -> minArea, // these are lambda methods, in case we want to change them while the match is running, for us to tune them or something
+				() -> 100, // these are lambda methods, in case we want to change them while the match is running, for us to tune them or something
 				() -> 213, // the left dividing line, in this case the left third of the frame
 				() -> 426 // the left dividing line, in this case the right third of the frame
 		);

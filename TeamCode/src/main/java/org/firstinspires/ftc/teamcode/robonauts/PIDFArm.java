@@ -13,25 +13,26 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @TeleOp
 @Config
 public class PIDFArm extends OpMode {
-    private final double zeroOffset = 30;
+    private final double zeroOffset = 60;
 
     private PIDController pidController=null;
-    public static  double kp=0.001;//0.77;
-    public static  double ki=0.00001;//0.003;
-    public static  double kd=0.00001;//0.0001;
+    public static  double kp=0.0004;//0.77;
+    public static  double ki=0.000015;//0.003;
+    public static  double kd=0.0003;//0.0001;
 
-    public static double kf=0.0001;//0.03;
+    public static double kf=0.0085;//0.03;
 
     public static int targetMotorPosition=0;
 
     //public static int targetDeg=0;
-    private final double ticksPerDegree=1425.1 / 360;
+    private final double ticksPerDegree=2786.2/360;
     public  Encoder armMotorEncoder;
     DcMotorEx armMotor = null;
     @Override
@@ -56,6 +57,8 @@ public class PIDFArm extends OpMode {
         double feedforward = Math.sin(Math.toRadians(angel)) * kf;
         double armPositionInDeg = armPos/ticksPerDegree + zeroOffset;
         double power = pid + feedforward;
+        power = Range.clip(power, -0.1, 0.1);
+
         armMotor.setPower(power);
         telemetry.addData("pid", pid);
 

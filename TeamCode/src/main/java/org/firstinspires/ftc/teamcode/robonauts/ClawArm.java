@@ -19,23 +19,26 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ClawArm {
     DcMotorEx armMotor = null;
-    private final double zeroOffset = 30;
+    private final double zeroOffset = 60;
 
     private PIDController pidController=null;
-    public static  double kp=0.001;//0.77;
+    public static  double kp=0.0004;//0.77;
     public static  double ki=0.00001;//0.003;
-    public static  double kd=0.00001;//0.0001;
+    public static  double kd=0.0001;//0.0001;
 
-    public static double kf=0.0001;//0.03;
-
+    public static double kf=0.0085;//0.03;
 
     //public static int targetDeg=0;
-    private final double ticksPerDegree=1425.1 / 360;
+    private final double ticksPerDegree=2786.2 / 360;
     private Telemetry telemetry;
     private double powerLimit=0.5;
 
     public int getTargetPosition() {
         return targetPosition;
+    }
+
+    public Context getRobotState() {
+        return robotState;
     }
 
     public void setTargetPosition(int targetPosition) {
@@ -45,24 +48,7 @@ public class ClawArm {
         this.targetPosition = targetPosition;
         this.powerLimit = powerLimit;
     }
-    public void setPower(double power)
-    {
-        if (power > 0.0)
-        {
-            // Move elevator towards max position with specified power.
-            setTargetPosition(-400, power);
-        }
-        else if (power < 0.0)
-        {
-            // Move elevator towards min position with specified power.
-            setTargetPosition(-100, power);
-        }
-        else
-        {
-            // Hold elevator position without power limit.
-            setTargetPosition(targetPosition, 1.0);
-        }
-    }
+
     private int targetPosition;
 
     private Context robotState;
@@ -96,10 +82,13 @@ public class ClawArm {
             telemetry.addData("angle",angel);
             double armPositionInDeg = armPos / ticksPerDegree + zeroOffset;
             double power = pid + feedforward;
-            telemetry.addData("power", power);
+            power = Range.clip(power, -0.1, 0.1);
+
+        telemetry.addData("power", power);
             telemetry.addData("targetExtendPosition", targetExtendPosition);
 
             armMotor.setPower(power);
+             this.robotState.setArmPosition(armPos);
 
             telemetry.update();
             return power;
@@ -109,24 +98,21 @@ public class ClawArm {
     public double moveTo() {
 
         pidController.setPID(kp,ki,kd);
-        int armPos = armMotor.getCurrentPosition();
-
+        int armPos =  armMotor.getCurrentPosition();
         //double targetPositionTicks = ((targetDeg-zeroOffset)*ticksPerDegree)/armPos;
         double pid = pidController.calculate(armPos, targetPosition);
-        telemetry.addData("PID", pid);
         // double feedforward = Math.cos(Math.toRadians(targetMotorPosition / ticksPerDegree)) * kf;
         double angel = armPos / ticksPerDegree + zeroOffset;
         double feedforward = Math.sin(Math.toRadians(angel)) * kf;
-        telemetry.addData("feed forward", feedforward);
-        telemetry.addData("arm position:",armPos);
-        telemetry.addData("angle",angel);
-        double armPositionInDeg = armPos / ticksPerDegree + zeroOffset;
+        double armPositionInDeg = armPos/ticksPerDegree + zeroOffset;
         double power = pid + feedforward;
-        //power = Range.clip(power, -powerLimit, powerLimit);
+        armMotor.setPower(power);
+        power = Range.clip(power, -0.1, 0.1);
         telemetry.addData("power", power);
         telemetry.addData("targetExtendPosition", targetPosition);
 
         armMotor.setPower(power);
+        this.robotState.setArmPosition(armPos);
 
         telemetry.update();
         return power;
@@ -145,20 +131,45 @@ public class ClawArm {
         return armMotor.getCurrentPosition();
     }
 
+    public void setRobotState() {
+        this.robotState.setRobotState("ARMEXTENDED");
+    }
+
+    public void setPower(double armPower) {
+        armPower = Range.clip(armPower, -0.042, 0.042);
+
+        armMotor.setPower(armPower);
+    }
+
+
+
     public class ExtendToDropAtSpikeAction implements Action {
         private boolean initialized = false;
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            moveTo(targetPosition);
+            if (!initialized) {
+                initialized = true;
+            }
+            telemetryPacket.put("Current state in CLAW ARM...", robotState.getRobotState() + System.currentTimeMillis());
 
-            return true;
+                moveTo(targetPosition);
+                if (Math.abs(robotState.getArmPosition()) > 250) {
+                    setRobotState();
+                    telemetryPacket.put("Context set in ClawArm...", robotState.getRobotState() + System.currentTimeMillis());
+                    return false;
+                } else {
+                    return true;
+                }
 
-        }
+            }
+
+
     }
 
 
     public Action extendToDropAtBoard() {
+
         return new ExtendToDropAtSpikeAction();
     }
 }

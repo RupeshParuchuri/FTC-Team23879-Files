@@ -46,7 +46,7 @@ public class ServoTest extends LinearOpMode {
 
             } else if (servoName.equalsIgnoreCase("main")) {
                 //clawMain.setDirection(Servo.Direction.REVERSE);
-                clawMain.setPower(-gamepad1.left_stick_y);
+                clawMain.setPower(position);
             }
 
     ///claw right 0.5 is claw release position  and 1 is clawpickup position.

@@ -26,10 +26,11 @@ public class PIDSlidesTuning extends OpMode {
 
     public static double kf=-0.0003;//0.03;
 
-    public static int targetMotorPosition=-2000;
+    public static int targetMotorPosition=-500;
 
     //public static int targetDeg=0;
         private final double ticksPerDegree=537.7 / 360;
+
     public Encoder armMotorEncoder;
     DcMotorEx leftMotor = null;
     DcMotorEx rightMotor = null;
@@ -39,13 +40,9 @@ public class PIDSlidesTuning extends OpMode {
     public void init() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         pidController = new PIDController(kp, ki,kd);
-
         leftMotor = hardwareMap.get(DcMotorEx.class, "par0");
         leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
         rightMotor = hardwareMap.get(DcMotorEx.class, "par1");
-
-
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -56,8 +53,23 @@ public class PIDSlidesTuning extends OpMode {
 
     @Override
     public void loop() {
+        double targetPosInTicks = 10 * 1770;
+        double currPosInTicks = leftMotor.getCurrentPosition();
+        double pidOutput = pidController.calculate(currPosInTicks, -targetPosInTicks);
+        double power = pidOutput + kf;
+        // Clip power to the range of -powerLimit to powerLimit.
+        //power = power < -powerLimit ? -powerLimit : power > powerLimit ? powerLimit : power;
+        telemetry.addData("right Power : " , power);
+
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
+    }
+
+
+    public void loop1() {
         pidController.setPID(kp,ki,kd);
         double feedforward = kf;
+        double targetPosInTicks = 10 * 1770;
 
 
         double rightPid = pidController.calculate(rightMotor.getCurrentPosition(), targetMotorPosition);
@@ -66,8 +78,8 @@ public class PIDSlidesTuning extends OpMode {
         double leftPid = pidController.calculate(leftMotor.getCurrentPosition(), targetMotorPosition);
         double leftPower = leftPid + feedforward;
 
-        leftMotor.setPower(rightpower);
-        rightMotor.setPower(rightpower);
+        leftMotor.setPower(leftPower);
+        rightMotor.setPower(leftPower);
         telemetry.addData("Feed Forward : " , feedforward);
         //telemetry.addData("Left Power : " , leftpower);
         telemetry.addData("right Power : " , rightpower);

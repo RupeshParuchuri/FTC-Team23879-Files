@@ -20,20 +20,24 @@ public class RobonautsTeleop extends LinearOpMode {
     boolean prevButtonAState = false;
     boolean prevButtonBState = false;
 
-    private int SLIDE_DEPOSIT_POS=-2000;
+    private int SLIDE_DEPOSIT_POS=-700;
     private int SLIDE_PICKUP_POS=-200;
 
-
+    private boolean prevButtonXState;
+    private boolean prevButtonYState;
     @Override
     public void runOpMode() throws InterruptedException {
 
         waitForStart();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-24, -24, Math.PI/2));
-        linearSlides = new LinearSlides(hardwareMap, telemetry, 0, "hold");
-        ClawArm clawArm  = new ClawArm(hardwareMap, telemetry, 0, null);
+        Context context = new Context();
+        linearSlides = new LinearSlides(hardwareMap, telemetry, 0, context);
+        ClawArm clawArm  = new ClawArm(hardwareMap, telemetry, 0, context);
         ;
-        ClawMain clawMain = new ClawMain(hardwareMap, 4000, null);
+        ClawMain clawMain = new ClawMain(hardwareMap, 4000, context);
+        PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
+
         /*
         while (opModeIsActive()) {
             if (gamepad2.b) {
@@ -56,9 +60,11 @@ public class RobonautsTeleop extends LinearOpMode {
                 clawMain.setPower(stick);
                 Actions.runBlocking(clawMain.release());
             }*/
+        double prevArmPower = 0.0;
+        double prevClawMainPower = 0.0;
         while (opModeIsActive()) {
-            telemetry.addData("gamepad1.left_stick_y", -gamepad1.left_stick_y);
-            clawMain.setPower(-gamepad1.left_stick_y);
+            //telemetry.addData("gamepad1.left_stick_y", -gamepad1.left_stick_y);
+            //clawMain.setPower(-gamepad1.left_stick_y);
             //Actions.runBlocking(clawMain.release());
 
             drive.setDrivePowers(new PoseVelocity2d(
@@ -78,26 +84,114 @@ public class RobonautsTeleop extends LinearOpMode {
 
             telemetry.update();
     ///////////////////////////Begin slides control///////////////////////
-            boolean buttonAPressed = gamepad2.a;
+           /* boolean buttonAPressed = gamepad2.a;
             boolean buttonBPressed = gamepad2.b;
-            if (!prevButtonAState && buttonAPressed)
-            {
+            if (!prevButtonAState && buttonAPressed) {
                 linearSlides.setTargetPosition(SLIDE_DEPOSIT_POS, 0.5);
-                linearSlides.moveTo();
+                telemetry.addData("Linear Slide   position set to", SLIDE_DEPOSIT_POS);
 
             }
-
             if (!prevButtonBState && buttonBPressed)
             {
                 linearSlides.setTargetPosition(SLIDE_PICKUP_POS, 0.5);
-                linearSlides.moveTo();
+                telemetry.addData("Linear Slide   position set to", SLIDE_PICKUP_POS);
+
             }
+            prevButtonAState = buttonAPressed;
+            prevButtonBState = buttonBPressed;
+
+
+
+            linearSlides.moveTo();
+
+            telemetry.addData("SLIDE   current position ", linearSlides.getCurrentPosition());
+            telemetry.update();
+*/
 //////////////////////////////end slider position//////////////////////////
             ////////////////////////begin arm handling//////////////////////
-            double armpower = -gamepad2.right_stick_x;
-            armpower = Math.abs(armpower) >= 0 ? armpower : 0.0;
-            clawArm.setPower(armpower);
-            clawArm.moveTo();
+
+            double clawMainPower = gamepad2.right_stick_x;
+            clawMainPower = Math.abs(clawMainPower) >=0 ? clawMainPower: 0.0;
+            if (clawMainPower != 0.0) {
+                clawMain.setPower(clawMainPower);
+                telemetry.addData("CLAW Main  Power set to", clawMainPower);
+
+                prevClawMainPower = clawMainPower;
+            } else if (prevClawMainPower != 0.0) {
+                clawMain.setPower(0.0);
+                prevClawMainPower = 0.0;
+            }
+
+            double armPower = gamepad2.left_stick_x;
+            armPower = Math.abs(armPower) >=0 ? armPower: 0.0;
+            if (armPower != 0.0) {
+                clawArm.setPower(armPower);
+                telemetry.addData("CLAW ARM  Power set to", armPower);
+
+                prevArmPower = armPower;
+            } else if (prevArmPower != 0.0) {
+                clawArm.setPower(0.0);
+                prevArmPower = 0.0;
+            } else {
+                boolean buttonXPressed = gamepad2.x;
+                boolean buttonYPressed = gamepad2.y;
+                boolean buttonAPressed = gamepad2.a;
+
+                if (!prevButtonXState && buttonXPressed) {
+                    clawArm.setTargetPosition(300, 0.045);
+                    //while (Math.abs(clawArm.getRobotState().getArmPosition()) < 300) {
+                    telemetry.addData("CLAW ARM  position set to", 100);
+                    //clawArm.moveTo();
+                    //}
+
+                }
+                if (!prevButtonYState && buttonYPressed)
+                {
+                    clawArm.setTargetPosition(700, 0.045);
+                    // while (Math.abs(clawArm.getRobotState().getArmPosition()) < 50) {
+                    telemetry.addData("CLAW ARM  position set to", 700);
+
+                    //clawArm.moveTo();
+                    //}
+                }
+                if (!prevButtonAState && buttonAPressed)
+                {
+                    clawArm.setTargetPosition(50, 0.01);
+                    // while (Math.abs(clawArm.getRobotState().getArmPosition()) < 50) {
+                    telemetry.addData("CLAW ARM  position set to", 0);
+
+                    //clawArm.moveTo();
+                    //}
+                }
+                telemetry.addData("button X Pressed.......... ", buttonXPressed);
+                telemetry.addData("button Y Pressed.......... ", buttonYPressed);
+
+                telemetry.addData("CLAW ARM  current position ", clawArm.getCurrentPosition());
+
+                prevButtonXState=buttonXPressed;
+                prevButtonYState=buttonYPressed;
+                clawArm.moveTo();
+                telemetry.update();
+            }
+            //////
+
+            //////////////// claw////
+
+            boolean button1APressed = gamepad1.a;
+            boolean button1BPressed = gamepad1.b;
+
+         if (gamepad2.left_trigger == 1) {
+                clawMain.grab();
+            }
+            if (gamepad2.right_trigger==1) {
+                clawMain.releaseClaw();
+            }
+
+            if (gamepad1.left_trigger == 1) {
+                pixelDrop.release();
+            }
+
+
             //clawArm.moveTo(-400);
             //clawArm.moveTo(-50);
             //////////////////////end arm handling/////////////////////////////////
