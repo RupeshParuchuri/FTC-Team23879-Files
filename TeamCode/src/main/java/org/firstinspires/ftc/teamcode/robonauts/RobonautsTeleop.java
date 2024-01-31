@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,12 +24,17 @@ public class RobonautsTeleop extends LinearOpMode {
     private int SLIDE_DEPOSIT_POS=-700;
     private int SLIDE_PICKUP_POS=-200;
 
+    Servo droneLauncher = null;
     private boolean prevButtonXState;
     private boolean prevButtonYState;
     @Override
     public void runOpMode() throws InterruptedException {
 
         waitForStart();
+
+        this.droneLauncher = hardwareMap.get(Servo.class,"launcher");
+        droneLauncher.setPosition(0.5); //rupesh added for launcher
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-24, -24, Math.PI/2));
         Context context = new Context();
@@ -110,7 +116,7 @@ public class RobonautsTeleop extends LinearOpMode {
 //////////////////////////////end slider position//////////////////////////
             ////////////////////////begin arm handling//////////////////////
 
-            double clawMainPower = gamepad2.right_stick_x;
+            double clawMainPower = gamepad2.right_stick_y;
             clawMainPower = Math.abs(clawMainPower) >=0 ? clawMainPower: 0.0;
             if (clawMainPower != 0.0) {
                 clawMain.setPower(clawMainPower);
@@ -122,7 +128,7 @@ public class RobonautsTeleop extends LinearOpMode {
                 prevClawMainPower = 0.0;
             }
 
-            double armPower = gamepad2.left_stick_x;
+            double armPower = gamepad2.left_stick_y;
             armPower = Math.abs(armPower) >=0 ? armPower: 0.0;
             if (armPower != 0.0) {
                 clawArm.setPower(armPower);
@@ -183,13 +189,16 @@ public class RobonautsTeleop extends LinearOpMode {
          if (gamepad2.left_trigger == 1) {
                 clawMain.grab();
             }
-            if (gamepad2.right_trigger==1) {
+         if (gamepad2.right_trigger==1) {
                 clawMain.releaseClaw();
             }
-
-            if (gamepad1.left_trigger == 1) {
+         if (gamepad1.left_trigger == 1) {
                 pixelDrop.release();
             }
+
+         if(gamepad1.right_trigger == 1){
+             droneLauncher.setPosition(0);
+         }
 
 
             //clawArm.moveTo(-400);
