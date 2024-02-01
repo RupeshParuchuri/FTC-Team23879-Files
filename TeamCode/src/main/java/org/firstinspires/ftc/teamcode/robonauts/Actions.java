@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.robonauts;
 
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robonauts.vision.ColourMassDetectionProcessor;
-import org.opencv.core.Mat;
 
 public class Actions {
     public static Action get_R1_DRIVE_TO_CENTER_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
@@ -26,13 +23,12 @@ public class Actions {
         return pixelDrop.resetPixel();
     }
 
-    public static Action releaseYellowPixel(MecanumDrive mecanumDrive, ClawMain clawMain) {
+    public static Action dropYellowPixel(MecanumDrive mecanumDrive, ClawMain clawMain) {
         return clawMain.releaseClawAction();
     }
 
 
-    public static Action get_R1_CENTER_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
-                                             ClawArm clawArm, ClawMain clawMain) {
+    public static Action get_R1_CENTER_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop) {
         return mecanumDrive.actionBuilder(mecanumDrive.pose)
                 .strafeTo( new Vector2d(-60,-38))
                 .strafeTo(new Vector2d(-60,0))
@@ -107,9 +103,17 @@ public class Actions {
                 .strafeTo(new Vector2d(-48, -36))
                 .strafeTo(new Vector2d(-38, -36))
                 .turn(Math.toRadians(-90))
-
                 .build();
     }
+
+    public static Action get_R4_DRIVE_TO_RIGHT_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop, ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+                .strafeTo(new Vector2d(-48, -36))
+                .strafeTo(new Vector2d(-38, -36))
+                .turn(Math.toRadians(-90))
+                .build();
+    }
+
     public static Action get_R1_RIGHT_TO_BB(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
                                           ClawArm clawArm, ClawMain clawMain) {
         return mecanumDrive.actionBuilder(mecanumDrive.pose)
@@ -120,19 +124,48 @@ public class Actions {
     }
 
 
-    public static Action get_R4_CENTER_DROP(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+    public static Action get_R4_DRIVE_TO_CENTER_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
                                             ClawArm clawArm, ClawMain clawMain) {
         return mecanumDrive.actionBuilder(mecanumDrive.pose)
                 .strafeTo(new Vector2d(12, -38))
                 .strafeTo(new Vector2d(10, -42))
-                .afterDisp(0.1, pixelDrop.release())
-                .turn(Math.toRadians(-90))
-                .strafeTo(new Vector2d(36,-36))
-                //.strafeTo(new Vector2d(36,0))
-                .strafeTo(new Vector2d(48,-12))
                 .build();
     }
 
+    public static Action get_R4_CENTER_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                                      ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+                 .turn(Math.toRadians(-90))
+                 .strafeTo(new Vector2d(36,-36))
+                 //.strafeTo(new Vector2d(36,0))
+                 .strafeTo(new Vector2d(48,-12))
+                .build();
+    }
+
+    public static Action get_R4_DRIVE_TO_LEFT_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                                    ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+                .strafeTo(new Vector2d(24, -48))
+                .strafeTo(new Vector2d(24, -36))
+                .turn(Math.toRadians(90))
+                .strafeTo(new Vector2d(12, -36))
+                .build();
+    }
+
+    public static Action get_R4_LEFT_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                           ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+                .strafeTo(new Vector2d(36, -36))
+                .turn(Math.toRadians(90)) //need to turn 180
+                //.strafeTo(new Vector2d(36,0))
+                .strafeTo(new Vector2d(50,-12))
+
+                .afterDisp(3, clawMain.releaseClawAction())
+                .strafeTo(new Vector2d(51,-12))
+                .turn(Math.toRadians(90)) //need to turn 180
+
+                .build();
+    }
 
     public static Action get_R4_LEFT_DROP(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
                                           ClawArm clawArm, ClawMain clawMain) {
@@ -154,6 +187,18 @@ public class Actions {
                 .build();
     }
 
+
+    public static Action get_R4_RIGHT_TO_BB(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
+                                           ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+
+                .strafeTo(new Vector2d(12, -36))
+                .strafeTo(new Vector2d(12, -20))
+                .strafeTo(new Vector2d(12, -18))
+                .strafeTo(new Vector2d(36, -18))
+                .strafeTo(new Vector2d(50,-12))
+                .build();
+    }
     public static Action get_R4_RIGHT_DROP(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
                                            ClawArm clawArm, ClawMain clawMain) {
         return mecanumDrive.actionBuilder(mecanumDrive.pose)
@@ -171,6 +216,15 @@ public class Actions {
 
                 .build();
     }
+
+    public static Action get_B2_DRIVE_TO_CENTER_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                            ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+                .strafeTo(new Vector2d(-36, 52))
+                .strafeTo(new Vector2d(-36, 36))
+                .build();
+    }
+
 
     public static Action get_B2_CENTER_DROP(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
                                             ClawArm clawArm, ClawMain clawMain) {
@@ -191,6 +245,21 @@ public class Actions {
 
                 .build();
     }
+    public static Action get_B2_CENTER_DRIVE_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                            ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+
+                .strafeTo(new Vector2d(-48, 36))
+                .strafeTo(new Vector2d(-48, 0))
+                .turn(Math.toRadians(90))
+                .strafeTo(new Vector2d(36, 0))
+                .strafeTo(new Vector2d(36,0))
+
+                .strafeTo(new Vector2d(48,12))
+
+                .build();
+    }
+
 
 
     public static Action get_B2_LEFT_DROP(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
@@ -206,6 +275,35 @@ public class Actions {
                 .strafeTo(new Vector2d(48,12))
                 .afterDisp(3, clawMain.releaseClawAction())
                 .strafeTo(new Vector2d(50,12))
+
+                .build();
+    }
+
+    public static Action get_B2_DRIVE_TO_LEFT_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                          ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+                .strafeTo(new Vector2d(-46, 48))
+                .strafeTo(new Vector2d(-48, 36))
+                .turn(Math.toRadians(90))
+                .strafeTo(new Vector2d(-38, 38))
+                /*.afterDisp(0.1, pixelDrop.release())
+                .strafeTo(new Vector2d(-38, 0))
+                .strafeTo(new Vector2d(36, 0))
+                .strafeTo(new Vector2d(48,12))
+                .afterDisp(3, clawMain.releaseClawAction())
+                .strafeTo(new Vector2d(50,12))*/
+
+                .build();
+    }
+
+    public static Action get_B2_LEFT_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                          ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder(mecanumDrive.pose)
+
+                .strafeTo(new Vector2d(-38, 0))
+                .strafeTo(new Vector2d(36, 0))
+                .strafeTo(new Vector2d(48,12))
+
 
                 .build();
     }
@@ -230,7 +328,31 @@ public class Actions {
                 .build();
     }
 
+    public static Action get_B2_DRIVE_TO_RIGHT_PIXEL(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
+                                           ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+                .strafeTo(new Vector2d(-56, 48))
+                .strafeTo(new Vector2d(-56, 48))
+                .strafeTo(new Vector2d(-56, 34))
 
+                .turn(Math.toRadians(90))
+                .strafeTo(new Vector2d(-60, 34))
+
+
+
+                .build();
+    }
+
+    public static Action get_B2_RIGHT_TO_BB(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
+                                           ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+
+                .strafeTo(new Vector2d(-58, 0))
+                .strafeTo(new Vector2d(36, 0))
+                .strafeTo(new Vector2d(48,12))
+
+                .build();
+    }
     public static Action get_B3_CENTER_DROP(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
                                             ClawArm clawArm, ClawMain clawMain) {
         return mecanumDrive.actionBuilder( mecanumDrive.pose)
@@ -243,6 +365,27 @@ public class Actions {
 
                 .turn(Math.toRadians(90))
 
+                .build();
+    }
+
+    public static Action get_B3_DRIVE_TO_CENTER_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                            ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+                .strafeTo(new Vector2d(12, 38))
+
+
+                .turn(Math.toRadians(90))
+
+                .build();
+    }
+
+    public static Action get_B3_CENTER_DRIVE_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                            ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+
+                .strafeTo(new Vector2d(12, 36))
+                .strafeTo(new Vector2d(36, 36))
+                .strafeTo(new Vector2d(50, 12))
                 .build();
     }
 
@@ -259,6 +402,31 @@ public class Actions {
                 .strafeTo(new Vector2d(49, 12))
                 .afterDisp(3, clawMain.releaseClawAction())
                 .strafeTo(new Vector2d(50, 12))
+
+                .build();
+
+    }
+
+    public static Action get_B3_DRIVE_TO_RIGHT_PIXEL(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                           ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+                .strafeTo(new Vector2d(12, 36))
+                .strafeTo(new Vector2d(14, 36))
+                .turn(Math.toRadians(-90))
+
+
+                .build();
+
+    }
+
+    public static Action get_B3_RIGHT_TO_BB(MecanumDrive mecanumDrive, PixelDrop pixelDrop,
+                                           ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+
+                //.turn(Math.toRadians(-180))
+                .strafeTo(new Vector2d(36, 36))
+                .strafeTo(new Vector2d(49, 12))
+
 
                 .build();
 
@@ -281,6 +449,31 @@ public class Actions {
                 .turn(Math.toRadians(90))
                 .afterDisp(3, clawMain.releaseClawAction())
                 .strafeTo(new Vector2d(51, 12))
+                .build();
+
+    }
+
+    public static Action get_B3_DRIVE_TO_LEFT_PIXEL(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
+                                          ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+                .strafeTo(new Vector2d(24, 48))
+                .strafeTo(new Vector2d(36, 36))
+                .turn(Math.toRadians(-90))
+                //drop goes here
+                .turn(Math.toRadians(90))
+
+
+                .build();
+
+    }
+
+    public static Action get_B3_LEFT_TO_BB(MecanumDrive mecanumDrive,  PixelDrop pixelDrop,
+                                          ClawArm clawArm, ClawMain clawMain) {
+        return mecanumDrive.actionBuilder( mecanumDrive.pose)
+
+                .strafeTo(new Vector2d(50, 12))
+                .turn(Math.toRadians(90))
+
                 .build();
 
     }

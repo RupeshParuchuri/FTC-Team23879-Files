@@ -14,8 +14,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robonauts.vision.ColourMassDetectionProcessor;
-import org.firstinspires.ftc.teamcode.robonauts.vision.EnhancedColourMassDetectionProcessor;
-import org.firstinspires.ftc.teamcode.robonauts.vision.ObjectDetection;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.opencv.core.Scalar;
 
@@ -84,7 +82,7 @@ public class R1RobonautsAutonomous extends LinearOpMode {
                             org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_DRIVE_TO_LEFT_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
                     org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
                     org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_LEFT_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
-                    org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                    org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
                     org.firstinspires.ftc.teamcode.robonauts.Actions.RedPark(mecanumDrive, pixelDrop, clawArm, clawMain)
                     )
                     );
@@ -93,8 +91,8 @@ public class R1RobonautsAutonomous extends LinearOpMode {
                     new SequentialAction(
                             org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_DRIVE_TO_CENTER_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
                             org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
-                            org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_CENTER_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
-                            org.firstinspires.ftc.teamcode.robonauts.Actions.releaseYellowPixel(mecanumDrive, clawMain),
+                            org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_CENTER_TO_BB(mecanumDrive, pixelDrop),
+                            org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
                             org.firstinspires.ftc.teamcode.robonauts.Actions.RedPark(mecanumDrive, pixelDrop, clawArm, clawMain)
                             )
             );
@@ -106,7 +104,7 @@ public class R1RobonautsAutonomous extends LinearOpMode {
                             org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_DRIVE_TO_RIGHT_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
                     org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
                     org.firstinspires.ftc.teamcode.robonauts.Actions.get_R1_RIGHT_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
-                    org.firstinspires.ftc.teamcode.robonauts.Actions.releaseYellowPixel(mecanumDrive, clawMain),
+                    org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
                     org.firstinspires.ftc.teamcode.robonauts.Actions.RedPark(mecanumDrive, pixelDrop, clawArm, clawMain)
                     )
                     );

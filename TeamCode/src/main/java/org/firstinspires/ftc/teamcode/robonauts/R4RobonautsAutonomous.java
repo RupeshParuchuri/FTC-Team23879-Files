@@ -78,22 +78,40 @@ public class R4RobonautsAutonomous extends LinearOpMode {
             PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
             if (spikeLocation.equalsIgnoreCase("LEFT")) {
                 Actions.runBlocking(
-                        org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_LEFT_DROP(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        new SequentialAction(
 
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_DRIVE_TO_LEFT_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_LEFT_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.RedPark(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        )
                 );
             } else if (spikeLocation.equalsIgnoreCase("MIDDLE")) {
                 Actions.runBlocking(
-                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_CENTER_DROP(mecanumDrive, pixelDrop, clawArm, clawMain
-                        ));
-
+                        new SequentialAction(
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_DRIVE_TO_CENTER_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_CENTER_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.RedPark(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        )
+                );
 
             } else {
                 Actions.runBlocking(
-                        org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_RIGHT_DROP(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        new SequentialAction(
 
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_DRIVE_TO_RIGHT_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_R4_RIGHT_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.RedPark(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        )
                 );
 
             }
+
 
 
             telemetry.addData("Prop location coordinates", spikeLocation);

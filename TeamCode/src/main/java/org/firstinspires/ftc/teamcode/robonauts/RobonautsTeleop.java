@@ -153,7 +153,7 @@ public class RobonautsTeleop extends LinearOpMode {
                 }
                 if (!prevButtonYState && buttonYPressed)
                 {
-                    clawArm.setTargetPosition(700, 0.045);
+                    clawArm.setTargetPosition(900, 0.045);
                     // while (Math.abs(clawArm.getRobotState().getArmPosition()) < 50) {
                     telemetry.addData("CLAW ARM  position set to", 700);
 
@@ -162,7 +162,7 @@ public class RobonautsTeleop extends LinearOpMode {
                 }
                 if (!prevButtonAState && buttonAPressed)
                 {
-                    clawArm.setTargetPosition(50, 0.01);
+                    clawArm.setTargetPosition(150, 0.01);
                     // while (Math.abs(clawArm.getRobotState().getArmPosition()) < 50) {
                     telemetry.addData("CLAW ARM  position set to", 0);
 

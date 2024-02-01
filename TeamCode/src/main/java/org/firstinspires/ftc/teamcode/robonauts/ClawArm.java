@@ -82,7 +82,7 @@ public class ClawArm {
             telemetry.addData("angle",angel);
             double armPositionInDeg = armPos / ticksPerDegree + zeroOffset;
             double power = pid + feedforward;
-            power = Range.clip(power, -0.1, 0.1);
+            //power = Range.clip(power, -0.7, 0.7);
 
         telemetry.addData("power", power);
             telemetry.addData("targetExtendPosition", targetExtendPosition);
@@ -107,7 +107,7 @@ public class ClawArm {
         double armPositionInDeg = armPos/ticksPerDegree + zeroOffset;
         double power = pid + feedforward;
         armMotor.setPower(power);
-        power = Range.clip(power, -0.1, 0.1);
+       // power = Range.clip(power, -0.7, 0.7);
         telemetry.addData("power", power);
         telemetry.addData("targetExtendPosition", targetPosition);
 

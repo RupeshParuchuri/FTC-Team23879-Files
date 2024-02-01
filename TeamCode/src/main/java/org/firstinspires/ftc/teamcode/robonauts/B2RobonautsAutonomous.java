@@ -70,7 +70,7 @@ public class B2RobonautsAutonomous extends LinearOpMode {
             ClawArm clawArm = new ClawArm(hardwareMap, telemetry, -300, context);
             ClawMain clawMain = new ClawMain(hardwareMap, startTimeInMilli, context);
             PixelDrop pixelDrop = new PixelDrop(hardwareMap, context);
-            if (spikeLocation.equalsIgnoreCase("LEFT")) {
+            /*if (spikeLocation.equalsIgnoreCase("LEFT")) {
                 Actions.runBlocking(
                         org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_LEFT_DROP(mecanumDrive, pixelDrop, clawArm, clawMain)
 
@@ -85,6 +85,41 @@ public class B2RobonautsAutonomous extends LinearOpMode {
                 Actions.runBlocking(
                         org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_RIGHT_DROP(mecanumDrive, pixelDrop, clawArm, clawMain)
 
+                );
+
+            }*/
+            if (spikeLocation.equalsIgnoreCase("LEFT")) {
+                Actions.runBlocking(
+                        new SequentialAction(
+
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_DRIVE_TO_LEFT_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_LEFT_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.BluePark(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        )
+                );
+            } else if (spikeLocation.equalsIgnoreCase("MIDDLE")) {
+                Actions.runBlocking(
+                        new SequentialAction(
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_DRIVE_TO_CENTER_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_CENTER_DRIVE_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.BluePark(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        )
+                );
+
+            } else {
+                Actions.runBlocking(
+                        new SequentialAction(
+
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_DRIVE_TO_RIGHT_PIXEL(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropPurplePixel(mecanumDrive, pixelDrop),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.get_B2_RIGHT_TO_BB(mecanumDrive, pixelDrop, clawArm, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.dropYellowPixel(mecanumDrive, clawMain),
+                                org.firstinspires.ftc.teamcode.robonauts.Actions.BluePark(mecanumDrive, pixelDrop, clawArm, clawMain)
+                        )
                 );
 
             }
